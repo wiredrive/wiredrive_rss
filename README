@@ -1,19 +1,18 @@
-Example Files for use with Wiredrive Media RSS Feeds
+Example files for use with Wiredrive Media RSS Feeds
 
-These example scripts are meant to be starting places for developers to build websites based on the Media RSS feeds using content that is currently in Wiredrive.  They answer the most frequent implementation questions we have received.
+These example files are meant to be starting places for developers to build websites based on the Wiredrive Media RSS feeds. The feeds allow developer to build sites using content that is currently in Wiredrive.  They answer the most frequent implementation questions we have received.
 
 Flash users:
-If you need to pull the RSS feed into Adobe Flash, put crossdomain/cache.php onto your webserver.  
-This file will copy the RSS feed to your server, and eliminate the need for crossdomain.xml.  See the php examples if you need the data sent from your server transformed to a different format.
+If you need to pull the RSS feed into Adobe Flash, put crossdomain/cache.php onto your webserver and have flash look to that file as the RSS feed URL.  This file will copy the RSS feed to your server, and eliminate the need for crossdomain.xml.  See crossdomain section for more information.
 
 crossdomain:
-cache.php pulls the RSS feed to the local web server and stores the contents in a session.  It is the easiest way to get around the any cross site validation dependencies in Flash or Javascript.  The contents of the RSS feed are not altered at all. 
+cache.php pulls the RSS feed to the local web server and stores the contents in a session.  It is the easiest way to get around any cross site validation dependencies in Flash or Javascript.  The contents of the RSS feed are not altered at all.   
 
 php:
-3 example layouts done entirely in php.  The RSS feed is converted to PHP objects using SimpleXML and cached as session data.
+3 example layouts done entirely in php and css.  The RSS feed is converted to PHP objects using SimpleXML.
 
 javascript:
-3 example layouts done entirely in javascript.  JSON is much easier to work with than XML in Javascript, so the example converts the RSS feed to JSON data via the Google APIs site first.
+3 example layouts done entirely in javascript and css.  JSON is much easier to work with than XML in Javascript, so the example converts the RSS feed to JSON data via the Google AJAX Feed APIs site first.
 
 See the Google AJAX Feed APIs for documentation about the conversion
 http://code.google.com/apis/ajaxfeeds/documentation/

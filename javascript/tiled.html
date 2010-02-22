@@ -15,22 +15,23 @@
         <meta http-equiv="Content-Language" content="en-US" >
         <meta http-equiv="expires" content="Wed, 19 Feb 2020 16:46:30 GMT" >
         <meta http-equiv="pragma" content="cache" >
-        <meta http-equiv="Cache-Control" content="cache" >         
+        <meta http-equiv="Cache-Control" content="cache" >   
+              
         <!-- Control the dimensions of the page in mobile safari -->
         <meta name="viewport" content="user-scalable=no, width=device-width, minimum-scale=1.0, maximum-scale=1.0"> 
         
-        <!-- Load the Jquery Library -->
+        <!-- Load the JQuery Library -->
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
-        <script type="text/javascript">
+                <script type="text/javascript">
             
             /*
-             *  Use any wiredrive presentation RSS feed here
+             *  Change wdPodcastFeed to your Wiredrive RSS feed
              */
             var wdPodcastFeed = "http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240";
 
             /*
-             *  Using the Jquery getScript utility to retrieve a json encoded
+             *  Use the JQuery getScript utility to retrieve a json encoded
              *  version of the RSS feed from the google api feed service
              */
             $.getScript("http://ajax.googleapis.com/ajax/services/feed/load?q=" 
@@ -47,15 +48,15 @@
             var wdPresentation = function(response){
                 
                 /*
-                 *  If you wish to browse the data available
-                 *  in the response, you can use firebug or
-                 *  any other developer tool to browse the 
+                 *  Uncomment the console.log line if you wish to browse 
+                 *  the data available in the callback response, you can 
+                 *  use firebug or any other developer tool to browse the 
                  *  data object.
                  */
                 // console.log(response);
                 
                 /*
-                 *  Grab the media items from the feed
+                 *  Grab all the items from the feed
                  */
                 var items = response.responseData.feed.entries;
                 
@@ -71,11 +72,31 @@
                 var output = "";
                 for (var i=0;i<=total - 1;i++)
                 {
+                    
+                    /*
+                     *  Get the current item from the feed
+                     */
                     var wdentry = items[i];
+                    
+                    /* 
+                     *  Get the media namespace part of the item
+                     */
                     var wdmedia = wdentry.mediaGroups[0].contents[0];
+                    
+                    /* 
+                     *  Start to build the div for this item
+                     */
                     var item = '<div class="wditem"><div class="wdinner">';      
                     item += '<a href="' + wdmedia.url + '">'; 
+                    
+                    /*
+                     *  thumbnails[1] is the small thumbnail
+                     */
                     item += '<img src="' +  wdmedia.thumbnails[1].url + '"/>';
+                    
+                    /*
+                     *  Add the title
+                     */
                     item += '<div class="wdtitle">' + wdentry.title + '</div>';
                     item += '</a>';
                     
@@ -86,18 +107,27 @@
                         item += '<div class="wdcredits">';
                         for (var j=0;j<=wdmedia.credits.length - 1;j++){
                             item += '<div>';
+                            
+                            /*
+                             *  Role is the credit type in Wiredrive
+                             */
                             item += '<span class="wdattr">' + wdmedia.credits[j].role + '</span>';
                             item += " : ";
+                            
+                            /*
+                             *  Content is the credit in Wiredrive
+                             */
                             item += '<span class="wdvalue">' + wdmedia.credits[j].content + '</span>';
                             item += "</div>";
-                        }
-                        item += "</div>";
+                        }  // end credits loop
+                        
+                        item += "</div>"; 
                     }
                     
                     item += '</div></div>';
                     
                     output += item;
-                }
+                }  // end item loop
                 
                 /*
                  *  Add the generated markup to the specified

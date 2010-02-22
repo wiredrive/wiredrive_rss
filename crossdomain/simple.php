@@ -12,7 +12,7 @@
  */
 
 /*********************************************************************************
- * Copyright 2010, Wiredrive
+ * Copyright (c) 2010 IOWA, llc dba Wiredrive
  * Author Daniel Bondurant
  *
  * This program is free software: you can redistribute it and/or modify

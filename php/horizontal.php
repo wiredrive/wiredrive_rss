@@ -75,7 +75,7 @@ $xml = simplexml_load_string($contents);
 <html>
 <head> 
 <title>Wiredrive RSS Loading Example</title>
-<meta name="keywords" content="wiredrive, rss, example" >
+<meta name="keywords" content="wiredrive, rss, mrss, example" >
 <meta name="description" content="This is an example document illustrating how to load a remote RSS feed and render its contents into an HTML page" >
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
 <meta http-equiv="Content-Language" content="en-US" >

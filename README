@@ -14,5 +14,5 @@ php:
 javascript:
 3 example layouts done entirely in javascript and css.  JSON is much easier to work with than XML in Javascript, so the example converts the RSS feed to JSON data via the Google AJAX Feed APIs site first.
 
-See the Google AJAX Feed APIs for documentation about the conversion
-http://code.google.com/apis/ajaxfeeds/documentation/
+See the Google AJAX Feed APIs for documentation about the conversion:
+http://code.google.com/apis/ajaxfeeds/documentation/reference.html#JSON

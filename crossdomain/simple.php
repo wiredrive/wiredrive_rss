@@ -7,7 +7,7 @@
  * for Flash and Javascript.  
  *
  * This is about as simple as possible.  Get the RSS feed from Wiredrive
- * and send it on
+ * and send it on from the local server.
  *
  */
 
@@ -33,7 +33,7 @@
  * get the the RSS feed and echo it out with XML headers
  * Change this to the RSS feed you would like to proxy on your server
  */
-$rss = 'http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240';
 header('Content-Type: text/xml; charset=UTF-8');
-echo file_get_contents($rss,'r');
 
+$rss = 'http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240';
+echo file_get_contents($rss,'r');

@@ -1,9 +1,9 @@
 Example files for use with Wiredrive Media RSS Feeds
 
-These example files are meant to be a starting place for developers to build websites based on the Wiredrive Media RSS feeds. The feeds allow developers to build sites using content that is currently in Wiredrive.  They illustrate examples of the most frequent implementation questions we have received.
+These example files are meant to be a starting place for developers to build websites on Wiredrive Media RSS feeds. The feeds allow developers to build sites using content hosted in Wiredrive. The example files address the most frequent implementation questions we have received.
 
 Flash users:
-If you want to pull the RSS feed into Adobe Flash, put crossdomain/cache.php onto your webserver and have Flash point to that file as the RSS feed URL.  The cache script will copy the RSS feed to your server and then serve it to the browser, thus eliminating the need for crossdomain.xml.  See crossdomain section for more information.
+If you want to pull the RSS feed into Adobe Flash, put crossdomain/cache.php onto your webserver and have Flash point to that file as the RSS feed URL. The cache script will copy the RSS feed to your server and then serve it to the browser, thus eliminating the need for crossdomain.xml. See crossdomain section for more information.
 
 See the Yahoo! Developer page on Cross-Domain requests for why this is necessary.
 http://developer.yahoo.com/javascript/howto-proxy.html
@@ -11,23 +11,23 @@ http://developer.yahoo.com/javascript/howto-proxy.html
 Code Folders:
 
 /crossdomain
-cache.php pulls the RSS feed to the local web server and then serves it to the browser.  It is the easiest way to get around any cross site validation dependencies in Flash or Javascript.  The contents of the RSS feed are not altered at all. 
+cache.php pulls the RSS feed to the local web server and then serves it to the browser. It is the easiest way to get around any cross site validation dependencies in Flash or Javascript. The contents of the RSS feed are in no way altered. 
 
-Alternatively you can pass the feed as a GET variable so the URL does not have to be hard coded in the source.
+Alternatively, you can pass the feed as a GET variable so the URL does not have to be hard coded in the source.
 
-simple.php is a 3 line file to get the RSS feed and send it out to the browser.  This example is as simple as possible; get the RSS feed from Wiredrive and send it on from the local server.  
+simple.php is a 3 line file to get the RSS feed and send it out to the browser. This is the simplest possible way to accomplish this step: get the RSS feed from Wiredrive and send it on from the local server.  
 
 /javascript
-3 example layouts done entirely in Javascript and CSS.  The example converts the RSS feed to JSON data via the Google AJAX Feed APIs site because JSON is much easier to work with than XML in Javascript.
+This file contains three example layouts done entirely in Javascript and CSS. The examples convert the RSS feed to JSON data using the Google AJAX Feed APIs site. We feel that JSON is much easier to work with than XML in Javascript.
 
 See the Google AJAX Feed APIs for documentation about the conversion:
 http://code.google.com/apis/ajaxfeeds/documentation/reference.html#JSON
 
 /json
-Very similar to /crossdomain examples, except the RSS is converted into JSON.  Also accepts a callback function; when this is called the JSON object is delivered as an argument to the specified callback.
+This file is is very similar to /crossdomain examples. The difference in /json is that the RSS is converted to JSON. This example file also accepts a callback function. When the function is called, the JSON object is delivered as an argument to the specified callback.
 
 /php
-3 example layouts done entirely in PHP and CSS.  The RSS feed is converted to PHP objects using SimpleXML.
+This file contains three example layouts done entirely in PHP and CSS. The RSS feed is converted to PHP objects using SimpleXML.
 
 /workshop
-Example site that was used at the mRSS workshop
+Example site that was used at the mRSS workshop.

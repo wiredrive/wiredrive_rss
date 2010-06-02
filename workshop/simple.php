@@ -64,9 +64,10 @@ if (!$contents) {
 }
 
 /*
- * Get the just the channel object 
+ * load contents into Simple XML.
+ * At this point the RSS feed is converted into a SimpleXML object
  */
-$channel = $xml->channel;
+$xml = simplexml_load_string($contents);
 
 /*
  * Check if a callback function was provided
@@ -75,13 +76,110 @@ $channel = $xml->channel;
  */
 $callback = 'processResponse';
 if ($_GET['callback']) {
-    $callback = filter_input(INPUT_GET,'callback',FILTER_CALLBACK);
+    $callback = filter_input(INPUT_GET,'callback',FILTER_SANITIZE_STRING);
 }
 
 /*
- * json encode the simpleXML object
+ * Start the response data array
  */
-$json = json_encode($channel);
+$response = array();
+
+/*
+ * Get the just the channel object 
+ */
+$channel = $xml->channel;
+
+/*
+ * Get any namespaces added to the RSS
+ */
+$ns = $xml->getNamespaces(TRUE);
+
+/*
+ * Cycle though the XML objects.  Conversion with json_encode will not
+ * work because CDATA does not convert, and the media attributes are
+ * difficult to pull out of json data
+ */
+foreach ($channel->children() as $element) {
+
+
+    /*
+    * Start the data array for this child
+    */
+    $elementData = array();
+
+    /*
+     * Add entities without children to the response array
+     */    
+    if ($element->count() == 0) {
+        $name = $element->getName();
+        $elementData[$name] = (string) $element;
+        continue;
+    }
+    
+    /*
+     * Add entities with children to the reponse array
+     */    
+    foreach ($element->children() as $item) {
+    
+        /*
+         * Get the name of the element
+         */
+        $name = $item->getName();
+    
+        /*
+         * Add items without attributes to the response array
+         */
+        if (sizeof($item->attributes()) == 0) {
+            $elementData['item'][$name] = (string) $item;  
+            continue;      
+        }
+        
+        /*
+         * Add the attributes
+         */
+        foreach ($item->attributes() as $attribute) {
+            $attributeName = $attribute->getName();
+            $elementData['item'][$name][$attributeName] = (string) $attribute;  
+        }    
+        
+    }
+
+    /*
+     * Cycle through any defined names spaces and 
+     * extract the elements
+     */
+    foreach($ns as $name=>$namespace) {
+        $nsChildren = $element->children($namespace);
+        
+        /*
+         * Cycle through the elements defined for this namespace
+         */  
+        foreach($nsChildren as $item) {
+        
+            /*
+             * Get the name for this element
+             */
+            $name = $item->getName();
+        
+            /*
+             * Add the attributes
+             */
+            foreach ($item->attributes() as $attribute) {
+                $attributeName = $attribute->getName();
+                $elementData['item'][$name][$attributeName] = (string) $attribute;  
+            }
+        }
+    } 
+    
+    $response[] = $elementData;
+    
+}
+
+/*
+ * JSON encode the response and force it an object
+ */
+$json = json_encode($response, JSON_FORCE_OBJECT);
+
 
 /*
  * Wrap the json in the callback

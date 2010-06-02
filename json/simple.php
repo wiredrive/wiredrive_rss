@@ -70,7 +70,7 @@ $channel = $xml->channel;
  */
 $callback = 'processResponse';
 if ($_GET['callback']) {
-    $callback = filter_input(INPUT_GET,'callback',FILTER_CALLBACK);
+    $callback = filter_input(INPUT_GET,'callback',FILTER_SANITIZE_STRING);
 }
 
 /*

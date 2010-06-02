@@ -25,27 +25,44 @@
 
         <script type="text/javascript">
             
+            var WD = {};
+
             /*
-             *  Change wdPodcastFeed to your Wiredrive RSS feed
+             *  Change WD.feed to the Wiredrive RSS feed
              */
-            var wdPodcastFeed = "http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240";
+            WD.feed = "http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240";
+            
+            /*
+             * Get unixtime and chop of the last 3 digits
+             * So we have one number for every 100 seconds
+             * the result is the response json is cached on googles servers
+             * for 100 seconds
+             */
+            WD.date = new Date; 
+            WD.timeMs = WD.date.getTime(); 
+            WD.cacheTime = parseInt(WD.timeMs / 100000);
+            
+            /*
+             * Add a cache varible to the RSS Url 
+             */
+            WD.feedCache = WD.feed + '/expire/' + WD.cacheTime;
 
             /*
              *  Use the JQuery getScript utility to retrieve a json encoded
              *  version of the RSS feed from the google api feed service
              */
             $.getScript("http://ajax.googleapis.com/ajax/services/feed/load?q=" 
-                            + wdPodcastFeed
+                            + WD.feedCache
                             + "&v=1.0"
                             + "&num=250"
-                            + "&callback=wdPresentation");
+                            + "&callback=WD.processResponse");
 
             /*
              *  This is the callback function specified in the google api
              *  feed service request,  the response data contains all
              *  the information in the wiredrive RSS feed
              */
-            var wdPresentation = function(response){
+            WD.processResponse = function(response){
                 
                 /*
                  *  Uncomment the console.log line if you wish to browse 

@@ -13,13 +13,21 @@ Code Folders:
 /crossdomain
 cache.php pulls the RSS feed to the local web server and then serves it to the browser.  It is the easiest way to get around any cross site validation dependencies in Flash or Javascript.  The contents of the RSS feed are not altered at all. 
 
-simple.php is a 3 line file to get the RSS feed and send it out to the browser.  This example is as simple as possible; get the RSS feed from Wiredrive and send it on from the local server.  
+Alternatively you can pass the feed as a GET variable so the URL does not have to be hard coded in the source.
 
-/php
-3 example layouts done entirely in PHP and CSS.  The RSS feed is converted to PHP objects using SimpleXML.
+simple.php is a 3 line file to get the RSS feed and send it out to the browser.  This example is as simple as possible; get the RSS feed from Wiredrive and send it on from the local server.  
 
 /javascript
 3 example layouts done entirely in Javascript and CSS.  The example converts the RSS feed to JSON data via the Google AJAX Feed APIs site because JSON is much easier to work with than XML in Javascript.
 
 See the Google AJAX Feed APIs for documentation about the conversion:
 http://code.google.com/apis/ajaxfeeds/documentation/reference.html#JSON
+
+/json
+Very similar to /crossdomain examples, except the RSS is converted into JSON.  Also accepts a callback function; when this is called the JSON object is delivered as an argument to the specified callback.
+
+/php
+3 example layouts done entirely in PHP and CSS.  The RSS feed is converted to PHP objects using SimpleXML.
+
+/workshop
+Example site that was used at the mRSS workshop

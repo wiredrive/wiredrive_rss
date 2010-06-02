@@ -56,13 +56,28 @@ if (isset($_SESSION[$rss_md5])){
 }
 
 /*
- * read in the RSS feed from the Wiredrive server if it was 
- * not already in the session and save it to the session.
+ * read the remote RSS feed from the Wiredrive server 
  */
 if (!isset($contents)){
     $contents = file_get_contents($rss,'r');
-    $_SESSION[$rss_md5] = $contents;
 }
+
+/*
+ * Make sure the RSS feed was opened.  Check the php manual
+ * page on opening remote files if this fails
+ *
+ * @link: http://www.php.net/manual/en/features.remote-files.php
+ */
+if (!$contents) {
+    echo "Unable to RSS feed";
+    exit;
+}
+
+/*
+ * Save the feed to a session for caching using MD5 of the 
+ * URL as the session key
+ */
+$_SESSION[$rss_md5] = $contents;
 
 /*
  * load contents into Simple XML.

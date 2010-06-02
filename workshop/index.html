@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title>RSS Example</title>
+        
+        <meta name="viewport" content="user-scalable=no, width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+        
+        <link rel="stylesheet" type="text/css" media="screen"  href="tiled.css" />
+        
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        
+        <script type="text/javascript">
+
+            var WD = {};
+
+            /*
+             * Get the Feed Data via a RESTful request
+             */
+            WD.feed = "http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240";
+            
+            $.getScript("/json/simple.php"
+                + "?feed=" + WD.feed 
+                + "&callback=WD.processResponse");
+
+            /*
+             * Process Response
+             */
+            WD.processResponse = function(response){
+                if (200 != response.responseStatus){
+                    return false;
+                }
+                var items = response.item;
+                var output = "";
+                for (var i=0;i<=items.length - 1;i++){
+                    output += WD.getItemMarkup(items[i]);
+                }
+                document.getElementById("content").innerHTML = output;
+            };
+            
+            /*
+             * Get Item Markup
+             */
+            WD.getItemMarkup = function(item){
+            
+                var credits = item.mediaGroups[0].contents[0].credits || array();
+                var creditsMarkup = '<ul>';
+                for (var j=0;j<=credits.length - 1;j++){
+                    creditsMarkup += '<li>'
+                        + '<span>' + credits[j].role + '</span>'
+                        + ' : ' + credits[j].content
+                        + '</li>';
+                }
+                creditsMarkup += "</ul>";
+            
+                var itemMarkup = '<div class="item">' 
+                    + '<a href="javascript:WD.showOverlay(\'' + item.mediaGroups[0].contents[0].url + '\')">'
+                    + '<img src="' +  item.mediaGroups[0].contents[0].thumbnails[1].url + '"/>'
+                    + '<h2>' + item.title + '</h2>'
+                    + '</a>'
+                    + creditsMarkup
+                    + '</div>';
+                
+                return itemMarkup;
+            };
+            
+            
+            /*
+             * Show Overlay
+             */
+            WD.showOverlay = function(src){
+                WD.overlay = document.getElementById('overlay') || document.createElement('div');
+                WD.overlay.id = "overlay";
+                WD.overlay.style.top = window.pageYOffset + 'px'; 
+                WD.overlay.style.left = window.pageXOffset + 'px';  
+                WD.overlay.innerHTML = '<video id="overlayVid" controls src="'+src+'" />';
+                document.body.appendChild(WD.overlay);
+                WD.overlayVid = document.getElementById('overlayVid');
+                WD.overlayVid.play();
+                WD.overlay.addEventListener("click", function(e){
+                    if (WD.overlay == e.target){
+                        document.body.removeChild(WD.overlay);
+                        WD.overlay = {};
+                    }
+                }, false);
+            };
+
+        </script>
+
+    </head> 
+    <body>
+        <h1><img src="cannes_winners.jpg"/></h1>
+        <div id="content"></div>
+    </body>
+</html>

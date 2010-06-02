@@ -40,9 +40,14 @@ session_start();
 
 /*
  * URL for the RSS feed
- * Change this to the RSS feed you would like to proxy on your server
+ * Change this to the RSS feed you would like to proxy 
+ * and transform to JSON on your server or add the
+ * feed as a GET variable in the URl
  */
 $rss = 'http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240';
+if ($_GET['feed']) {
+    $rss = filter_input(INPUT_GET,'feed',FILTER_VALIDATE_URL);
+}
 
 /*
  * create a MD5 of the URL for caching in the sessions
@@ -57,13 +62,28 @@ if (isset($_SESSION[$rss_md5])){
 }
 
 /*
- * read in the RSS feed from the Wiredrive server if it was 
- * not already in the session and save it to the session.
+ * read the remote RSS feed from the Wiredrive server 
  */
 if (!isset($contents)){
     $contents = file_get_contents($rss,'r');
-    $_SESSION[$rss_md5] = $contents;
 }
+
+/*
+ * Make sure the RSS feed was opened.  Check the php manual
+ * page on opening remote files if this fails
+ *
+ * @link: http://www.php.net/manual/en/features.remote-files.php
+ */
+if (!$contents) {
+    echo "Unable to RSS feed";
+    exit;
+}
+
+/*
+ * Save the feed to a session for caching using MD5 of the 
+ * URL as the session key
+ */
+$_SESSION[$rss_md5] = $contents;
 
 
 /*

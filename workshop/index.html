@@ -18,7 +18,7 @@
              */
             WD.feed = "http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240";
             
-            $.getScript("/json/simple.php"
+            $.getScript("http://rss.bondu.iowalab.com/wiredrive_rss/workshop/simple.php"
                 + "?feed=" + WD.feed 
                 + "&callback=WD.processResponse");
 
@@ -29,7 +29,9 @@
                 if (200 != response.responseStatus){
                     return false;
                 }
-                var items = response.item;
+                                         
+                var items = response.responseData;
+                var one = items[0];
                 var output = "";
                 for (var i=0;i<=items.length - 1;i++){
                     output += WD.getItemMarkup(items[i]);
@@ -37,24 +39,27 @@
                 document.getElementById("content").innerHTML = output;
             };
             
+            
             /*
              * Get Item Markup
              */
             WD.getItemMarkup = function(item){
-            
-                var credits = item.mediaGroups[0].contents[0].credits || array();
+                       
+                var credits = item.credit || array();
                 var creditsMarkup = '<ul>';
                 for (var j=0;j<=credits.length - 1;j++){
                     creditsMarkup += '<li>'
                         + '<span>' + credits[j].role + '</span>'
                         + ' : ' + credits[j].content
                         + '</li>';
+                        
+                        console.log(credits[j].role);
                 }
                 creditsMarkup += "</ul>";
             
                 var itemMarkup = '<div class="item">' 
-                    + '<a href="javascript:WD.showOverlay(\'' + item.mediaGroups[0].contents[0].url + '\')">'
-                    + '<img src="' +  item.mediaGroups[0].contents[0].thumbnails[1].url + '"/>'
+                    + '<a href="javascript:WD.showOverlay(\'' + item.content[0].url + '\')">'
+                    + '<img src="' +  item.mediaGroups[0].thumbnail[1].url + '"/>'
                     + '<h2>' + item.title + '</h2>'
                     + '</a>'
                     + creditsMarkup

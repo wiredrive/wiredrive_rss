@@ -101,11 +101,15 @@ $ns = $xml->getNamespaces(TRUE);
  */
 foreach ($channel->children() as $element) {
 
-
     /*
     * Start the data array for this child
     */
     $elementData = array();
+
+    /* 
+     * Get the element name and start and array
+     */
+    $elementName = (string) $element->getName();
 
     /*
      * Add entities without children to the response array
@@ -130,7 +134,7 @@ foreach ($channel->children() as $element) {
          * Add items without attributes to the response array
          */
         if (sizeof($item->attributes()) == 0) {
-            $elementData['item'][$name] = (string) $item;  
+            $elementData[$elementName][$name] = (string) $item;  
             continue;      
         }
         
@@ -139,7 +143,7 @@ foreach ($channel->children() as $element) {
          */
         foreach ($item->attributes() as $attribute) {
             $attributeName = $attribute->getName();
-            $elementData['item'][$name][$attributeName] = (string) $attribute;  
+            $elementData[$elementName][$name][$attributeName] = (string) $attribute;  
         }    
         
     }
@@ -154,32 +158,54 @@ foreach ($channel->children() as $element) {
         /*
          * Cycle through the elements defined for this namespace
          */  
+        $count = array();
         foreach($nsChildren as $item) {
-        
+
             /*
              * Get the name for this element
              */
             $name = $item->getName();
+
+            /*
+             * Make sure there is a counter for each item and start counting at 0
+             */
+            if (!$count[$name]) {
+                $count[$name] = 0;
+            }
+            $i = $count[$name];
         
             /*
              * Add the attributes
              */
             foreach ($item->attributes() as $attribute) {
                 $attributeName = $attribute->getName();
-                $elementData['item'][$name][$attributeName] = (string) $attribute;  
+                $elementData[$elementName][$name][$i][$attributeName] = (string) $attribute;  
             }
+
+            /*
+             * increment the counter for this item
+             */
+            $count[$name]++;
         }
     } 
     
-    $response[] = $elementData;
-    
+    $response['responseData'][] = $elementData;
 }
 
-/*
- * JSON encode the response and force it an object
- */
-$json = json_encode($response, JSON_FORCE_OBJECT);
+$response['responseStatus'] = 200;
 
+/*
+ * JSON encode the response
+ */
+$json = json_encode($response);
+
+/*
+ * Make sure json encoding passed
+ */
+if (!$json || $json == 'null') {
+    $error['responseStatus'] = 500;
+    $json = json_encode($error);
+}
 
 /*
  * Wrap the json in the callback

@@ -36,6 +36,13 @@
 $rss = 'http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240';
 
 /*
+ * Make sure the RSS Url is set
+ */
+if (!$rss) {
+    throw new Exception('RSS feed is not a valid URL');
+}
+
+/*
  * read the remote RSS feed from the Wiredrive server 
  */
 $contents = file_get_contents($rss,'r');
@@ -47,8 +54,7 @@ $contents = file_get_contents($rss,'r');
  * @link: http://www.php.net/manual/en/features.remote-files.php
  */
 if (!$contents) {
-    echo "Unable to RSS feed";
-    exit;
+    throw new Exception('Unable to retrieve RSS feed');
 }
 
 /*

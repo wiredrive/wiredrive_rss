@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Wiredrive RSS Conver to JSON Example
+ * Wiredrive RSS Convert to JSON Example
  * 
  * Example file for converting RSS to JSON to get around same 
  * domain restrictions for Flash and Javascript.  
@@ -29,12 +29,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+include_once('rssToJson.php');
+
 /*
  * URL for the RSS feed
  * Change this to the RSS feed you would like to proxy 
- * and transform to JSON on your server
+ * and transform to JSON on your server.  You can also
+ * optinoally add the RSS feed to the request URL
  */
 $rss = 'http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240';
+if ($_GET['feed']) {
+    $rss = filter_input(INPUT_GET,'feed',FILTER_VALIDATE_URL);
+}
+
+/*
+ * Make sure the RSS Url is set
+ */
+if (!$rss) {
+    throw new Exception('RSS feed is not a valid URL');
+}
 
 /*
  * read the remote RSS feed from the Wiredrive server 
@@ -48,8 +61,7 @@ $contents = file_get_contents($rss,'r');
  * @link: http://www.php.net/manual/en/features.remote-files.php
  */
 if (!$contents) {
-    echo "Unable to RSS feed";
-    exit;
+    throw new Exception('Unable to retrieve RSS feed');
 }
 
 /*
@@ -59,14 +71,8 @@ if (!$contents) {
 $xml = simplexml_load_string($contents);
 
 /*
- * Get the just the channel object 
- */
-$channel = $xml->channel;
-
-/*
- * Check if a callback function was provided
- * Default function is processResponse but should be
- * overriden in the GET string
+ * Check if a callback function was provided with the request Url.
+ * Default function is processResponse() 
  */
 $callback = 'processResponse';
 if ($_GET['callback']) {
@@ -74,9 +80,10 @@ if ($_GET['callback']) {
 }
 
 /*
- * json encode the simpleXML object
+ * Convert the XML to Json
  */
-$json = json_encode($channel);
+$convert = new rssToJson($xml);
+$json = $convert->getJson();
 
 /*
  * Wrap the json in the callback

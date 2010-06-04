@@ -50,6 +50,13 @@ if ($_GET['feed']) {
 }
 
 /*
+ * Make sure the RSS Url is set
+ */
+if (!$rss) {
+    throw new Exception('RSS feed is not a valid URL');
+}
+
+/*
  * create a MD5 of the URL for caching in the sessions
  */
 $rss_md5 = md5($rss);
@@ -75,8 +82,7 @@ if (!isset($contents)){
  * @link: http://www.php.net/manual/en/features.remote-files.php
  */
 if (!$contents) {
-    echo "Unable to RSS feed";
-    exit;
+    throw new Exception('Unable to retrieve RSS feed');
 }
 
 /*

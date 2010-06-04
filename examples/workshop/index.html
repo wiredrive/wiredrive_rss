@@ -1,14 +1,11 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" 
+"http://www.w3.org/TR/html140/DTD/loose.dtd">
 <html> 
     <head>
-        <title>RSS Example</title>
-        
+        <title>mRSS Workshop Example</title>
         <meta name="viewport" content="user-scalable=no, width=device-width, minimum-scale=1.0, maximum-scale=1.0">
-        
         <link rel="stylesheet" type="text/css" media="screen"  href="tiled.css" />
-        
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-        
         <script type="text/javascript">
 
             var WD = {};
@@ -18,7 +15,7 @@
              */
             WD.feed = "http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240";
             
-            $.getScript("http://rss.bondu.iowalab.com/wiredrive_rss/workshop/simple.php"
+            $.getScript("json.php"
                 + "?feed=" + WD.feed 
                 + "&callback=WD.processResponse");
 

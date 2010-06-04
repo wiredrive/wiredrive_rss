@@ -3,31 +3,40 @@ Example files for use with Wiredrive Media RSS Feeds
 These example files are meant to be a starting place for developers to build websites on Wiredrive Media RSS feeds. The feeds allow developers to build sites using content hosted in Wiredrive. The example files address the most frequent implementation questions we have received.
 
 Flash users:
-If you want to pull the RSS feed into Adobe Flash, put crossdomain/cache.php onto your webserver and have Flash point to that file as the RSS feed URL. The cache script will copy the RSS feed to your server and then serve it to the browser, thus eliminating the need for crossdomain.xml. See crossdomain section for more information.
+If you want to pull the RSS feed into Adobe Flash, put proxy/rss/cache.php onto your webserver and have Flash point to that file as the RSS feed URL. The cache script will copy the RSS feed from the Wiredrive CDN to your server and then serve it to the browser, thus eliminating the need for crossdomain.xml. 
 
 See the Yahoo! Developer page on Cross-Domain requests for why this is necessary.
 http://developer.yahoo.com/javascript/howto-proxy.html
 
 Code Folders:
 
-/crossdomain
+/proxy/rss
 cache.php pulls the RSS feed to the local web server and then serves it to the browser. It is the easiest way to get around any cross site validation dependencies in Flash or Javascript. The contents of the RSS feed are in no way altered. 
 
 Alternatively, you can pass the feed as a GET variable so the URL does not have to be hard coded in the source.
 
 simple.php is a 3 line file to get the RSS feed and send it out to the browser. This is the simplest possible way to accomplish this step: get the RSS feed from Wiredrive and send it on from the local server.  
 
-/javascript
+/proxy/json
+This file is is very similar to /crossdomain examples. The difference in /json is that the RSS is converted to JSON. This example file also accepts a callback function. When the function is called, the JSON object is delivered as an argument to the specified callback.
+
+Example Folders:
+
+example/javascript
 This file contains three example layouts done entirely in Javascript and CSS. The examples convert the RSS feed to JSON data using the Google AJAX Feed APIs site. We feel that JSON is much easier to work with than XML in Javascript.
 
 See the Google AJAX Feed APIs for documentation about the conversion:
 http://code.google.com/apis/ajaxfeeds/documentation/reference.html#JSON
 
-/json
-This file is is very similar to /crossdomain examples. The difference in /json is that the RSS is converted to JSON. This example file also accepts a callback function. When the function is called, the JSON object is delivered as an argument to the specified callback.
-
-/php
+example/php
 This file contains three example layouts done entirely in PHP and CSS. The RSS feed is converted to PHP objects using SimpleXML.
 
-/workshop
-Example site that was used at the mRSS workshop.
+example/workshop
+Example site that used at the Wiredrive mRSS workshop.
+
+Additional Resources:
+Wiredrive Google Group has a FAQ, resources, and tips on integrating with the Media RSS Feeds
+http://groups.google.com/group/wiredrive
+
+RSS section of the Wiredrive Website has information on how to get started
+http://www.wiredrive.com/rss

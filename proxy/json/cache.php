@@ -1,17 +1,13 @@
 <?php
 
 /*
- * Wiredrive RSS Caching
+ * Wiredrive RSS Convert to JSON Example
  * 
- * Example file for simple RSS caching to get around same domain 
- * restrictions for Flash and Javascript
+ * Example file for converting RSS to JSON to get around same 
+ * domain restrictions for Flash and Javascript.  
  *
- * This file will get the RSS feed from the Wiredrive, save and 
- * serve from a local server.  Gzip will be used if it's available, to 
- * minimize the file size going out to the browser.
- *
- * Contents of the RSS feed are saved to a session so a request is not
- * going to the Wiredrive servers on every request.
+ * This is about as simple as possible.  Get the RSS feed from Wiredrive
+ * convert it to JSON and send it on from the local server.
  *
  */
 
@@ -33,6 +29,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+include_once('rssToJson.php');
+
 /*
  * start a session to save the contents of the rss feed
  */
@@ -41,7 +39,8 @@ session_start();
 /*
  * URL for the RSS feed
  * Change this to the RSS feed you would like to proxy 
- * and transform to JSON on your server
+ * and transform to JSON on your server.  You can also
+ * optinoally add the RSS feed to the request URL
  */
 $rss = 'http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240';
 if ($_GET['feed']) {
@@ -49,41 +48,76 @@ if ($_GET['feed']) {
 }
 
 /*
+ * Make sure the RSS Url is set
+ */
+if (!$rss) {
+    throw new Exception('RSS feed is not a valid URL');
+}
+
+/*
  * create a MD5 of the URL for caching in the sessions
  */
-$rss_md5 = md5($rss);
+$json_md5 = md5($rss);
 
 /*
  * check if this feed exists already in the session and pull it out
  */
-if (isset($_SESSION[$rss_md5])){
-    $contents = $_SESSION[$rss_md5];
+if (isset($_SESSION[$json_md5])){
+
+    /*
+     * Get the json data from the session
+     */
+    $json = $_SESSION[$json_md5];
 }
 
 /*
  * read the remote RSS feed from the Wiredrive server 
  */
-if (!isset($contents)){
+if (!isset($json)){
     $contents = file_get_contents($rss,'r');
+
+    /*  
+     * Make sure the RSS feed was opened.  Check the php manual
+     * page on opening remote files if this fails
+     *
+     * @link: http://www.php.net/manual/en/features.remote-files.php
+     */
+    if (!$contents) {
+        throw new Exception('Unable to retrieve RSS feed');
+    }
+
+    /*
+     * load contents into Simple XML.
+     * At this point the RSS feed is converted into a SimpleXML object
+     */
+    $xml = simplexml_load_string($contents);
+    
+    /*
+     * Convert the XML to Json
+     */
+    $convert = new rssToJson($xml);
+    $json = $convert->getJson();
 }
 
 /*
- * Make sure the RSS feed was opened.  Check the php manual
- * page on opening remote files if this fails
- *
- * @link: http://www.php.net/manual/en/features.remote-files.php
- */
-if (!$contents) {
-    echo "Unable to RSS feed";
-    exit;
-}
-
-/*
- * Save the feed to a session for caching using MD5 of the 
+ * Save the json parsed data to a session for caching using MD5 of the 
  * URL as the session key
  */
-$_SESSION[$rss_md5] = $contents;
+$_SESSION[$json_md5] = $json;
 
+/*
+ * Check if a callback function was provided with the request Url.
+ * Default function is processResponse() 
+ */
+$callback = 'processResponse';
+if ($_GET['callback']) {
+    $callback = filter_input(INPUT_GET,'callback',FILTER_SANITIZE_STRING);
+}
+
+/*
+ * Wrap the json in the callback
+ */
+$output = $callback ."(" . $json .");";
 
 /*
  * check if the client will accept it gzip using the server headers
@@ -112,11 +146,11 @@ if( strpos($HTTP_ACCEPT_ENCODING, 'x-gzip') !== FALSE ) {
  */
 if ($encoding != FALSE) {
     header('Content-Encoding: '. $encoding); 
-    $contents = gzencode($contents, 9);
+    $output = gzencode($output, 9);
 }
-                        
+
 /*
- * send XML headers 
+ * Send to the user with headers
  */
 header('Content-Type: text/plain; charset=UTF-8');
 
@@ -130,36 +164,7 @@ header('Cache-Control: max-age='.$maxAge);
 header("Expires: $expires");
 
 /*
- * Parse the file with SimpleXML
+ * output the feed
  */
-$xml = simplexml_load_string($contents);
+echo $output; 
 
-/*
- * Check if a callback function was provided
- * Default function is processResponse but should be
- * overriden in the GET string
- */
-$callback = 'processResponse';
-if ($_GET['callback']) {
-    $callback = filter_input(INPUT_GET,'callback',FILTER_CALLBACK);
-}
-
-/*
- * Get the just the channel object 
- */
-$channel = $xml->channel;
-
-/*
- * json encode the simpleXML object
- */
-$json = json_encode($channel);
-
-/*
- * Wrap the json in the callback
- */
-$output = $callback ."(" . $json .");";
-
-/*
- * Send to the user 
- */
-echo $output;

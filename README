@@ -8,6 +8,7 @@ If you want to pull the RSS feed into Adobe Flash, put proxy/rss/cache.php onto 
 See the Yahoo! Developer page on Cross-Domain requests for why this is necessary.
 http://developer.yahoo.com/javascript/howto-proxy.html
 
+
 Code Folders:
 
 /proxy/rss
@@ -15,10 +16,11 @@ cache.php pulls the RSS feed to the local web server and then serves it to the b
 
 Alternatively, you can pass the feed as a GET variable so the URL does not have to be hard coded in the source.
 
-simple.php is a 3 line file to get the RSS feed and send it out to the browser. This is the simplest possible way to accomplish this step: get the RSS feed from Wiredrive and send it on from the local server.  
+developer.php is a 3 line file to get the RSS feed and send it out to the browser. This is the simplest possible way to accomplish this step: get the RSS feed from Wiredrive and send it on from the local server.  
 
 /proxy/json
-This file is is very similar to /crossdomain examples. The difference in /json is that the RSS is converted to JSON. This example file also accepts a callback function. When the function is called, the JSON object is delivered as an argument to the specified callback.
+This folder is is very similar to /proxy/rss examples. The difference in /proxy/json is that the RSS is converted to a JSON string. This example file also accepts a callback function. When the function is called, the JSON object is delivered as an argument to the specified callback.
+
 
 Example Folders:
 
@@ -34,7 +36,9 @@ This file contains three example layouts done entirely in PHP and CSS. The RSS f
 example/workshop
 Example site that used at the Wiredrive mRSS workshop.
 
+
 Additional Resources:
+
 Wiredrive Google Group has a FAQ, resources, and tips on integrating with the Media RSS Feeds
 http://groups.google.com/group/wiredrive
 

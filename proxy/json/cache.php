@@ -57,7 +57,7 @@ if (!$rss) {
 /*
  * create a MD5 of the URL for caching in the sessions
  */
-$json_md5 = md5($rss);
+$json_md5 = md5('json-'.$rss);
 
 /*
  * check if this feed exists already in the session and pull it out

@@ -183,6 +183,14 @@ foreach ($channel->children() as $element) {
             }
 
             /*
+             * Add the value of the element if it exists
+             */
+            $content = (string) $item;
+            if (!empty( $content) ) {
+                $elementData[$elementName][$name][$i]['content'] = $content;  
+            }
+
+            /*
              * increment the counter for this item
              */
             $count[$name]++;

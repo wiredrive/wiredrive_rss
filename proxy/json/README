@@ -1,0 +1,63 @@
+These sample scripts convert the RSS Data into a JSON object for easy use in Flash and Javascript.  Converting to JSON on the local server avoids any crossdomain problems and also converts the data into an easy to work with format.
+
+You are encouraged to use development.php when developing your application, then switch to cache.php when going into production.  Using cache.php will speed up the overall load time of the script.
+
+JSON formatted data comes is the following structure:
+
+{
+    "responseData": [
+        {
+            "item": {
+                "title": "Vingt Quatre",
+                "link": "http:\/\/wpc.0155.edgecastcdn.net\/800155\/la-production.wiredrive.com\/\/cdn\/asset\/view\/client\/merc\/package\/library\/id\/392405\/format\/o\/h\/1244a9435a98a3834182e6d97c74b551\/?7a6013aef28682d61703dff726d21b126928705a855f255f732a3d63a28d0b644f8955",
+                "guid": "http:\/\/merc.wiredrive.com\/l\/p\/?presentation=84b8b5e27e9f55c7417848abb3327240#392405",
+                "description": "VingtQuatre.mov\n<br \/><img src=\"http:\/\/wpc.0155.edgecastcdn.net\/800155\/la-production.wiredrive.com\/\/cdn\/asset\/view\/client\/merc\/package\/library\/id\/392405\/format\/t\/size\/sm\/h\/9579374558426aa5c39db8b9ee59c070\/?7a6013aef28682d61703dff726d21b126928705a855f255f732a3d63a28d0b644f8955.jpg\" \/>",
+                "pubDate": "Fri, 18 Dec 2009 00:42:21 +0000",
+                "enclosure": {
+                    "url": "http:\/\/wpc.0155.edgecastcdn.net\/800155\/la-production.wiredrive.com\/\/cdn\/asset\/view\/client\/merc\/package\/library\/id\/392405\/format\/o\/h\/1244a9435a98a3834182e6d97c74b551\/VingtQuatre.mov?7a6013aef28682d61703dff726d21b126928705a855f255f732a3d63a28d0b644f8955.mov",
+                    "type": "video\/quicktime",
+                    "length": "40357639"
+                },
+                "content": [
+                    {
+                        "url": "http:\/\/wpc.0155.edgecastcdn.net\/800155\/la-production.wiredrive.com\/\/cdn\/asset\/view\/client\/merc\/package\/library\/id\/392405\/format\/o\/h\/1244a9435a98a3834182e6d97c74b551\/VingtQuatre.mov?7a6013aef28682d61703dff726d21b126928705a855f255f732a3d63a28d0b644f8955.mov",
+                        "fileSize": "40357639",
+                        "type": "video\/quicktime",
+                        "height": "270",
+                        "width": "480"
+                    }
+                ],
+                "thumbnail": [
+                    {
+                        "url": "http:\/\/wpc.0155.edgecastcdn.net\/800155\/la-production.wiredrive.com\/\/cdn\/asset\/view\/client\/merc\/package\/library\/id\/392405\/format\/t\/size\/lg\/h\/9579374558426aa5c39db8b9ee59c070\/VingtQuatre.mov?7a6013aef28682d61703dff726d21b126928705a855f255f732a3d63a28d0b644f8955.jpg",
+                        "height": "480",
+                        "width": "640"
+                    },
+                    {
+                        "url": "http:\/\/wpc.0155.edgecastcdn.net\/800155\/la-production.wiredrive.com\/\/cdn\/asset\/view\/client\/merc\/package\/library\/id\/392405\/format\/t\/size\/sm\/h\/9579374558426aa5c39db8b9ee59c070\/VingtQuatre.mov?7a6013aef28682d61703dff726d21b126928705a855f255f732a3d63a28d0b644f8955.jpg",
+                        "height": "135",
+                        "width": "180"
+                    }
+                ],
+                "credit": [
+                    {
+                        "role": "client",
+                        "scheme": "urn:feeds-wiredrive-com:credits",
+                        "content": "Stella Artois"
+                    },
+                    {
+                        "role": "production company",
+                        "scheme": "urn:feeds-wiredrive-com:credits",
+                        "content": "Landia"
+                    },
+                    {
+                        "role": "award winner",
+                        "scheme": "urn:feeds-wiredrive-com:credits",
+                        "content": "Cannes Gold Lion 2009"
+                    }
+                ]
+            }
+        }
+    ],
+    "responseStatus": 200
+}

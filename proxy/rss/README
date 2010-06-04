@@ -1,0 +1,2 @@
+These example files import the RSS feed from the Wiredrive CDN to the local server, then send the unaltered data to the user.  Proxying the feed on the local server avoids any crossdomain problems.
+

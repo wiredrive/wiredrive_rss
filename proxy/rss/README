@@ -1,2 +1,6 @@
-These example files import the RSS feed from the Wiredrive CDN to the local server, then send the unaltered data to the user.  Proxying the feed on the local server avoids any crossdomain problems.
+These example files import the RSS feed from the Wiredrive CDN to the local server, then send the data unaltered to the user.  Creating a local proxy of the feed on your server helps avoid cross site validation problems.
 
+We encourage users to use development.php while creating the site, then switch to cache.php when going into production.  Using cache.php will speed up the overall load time of the script and therefore your site.
+
+Example usage:
+http://www.example.com/cache.php?feed=http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240

@@ -1,8 +1,12 @@
-These sample scripts convert the RSS Data into a JSON object for easy use in Flash and Javascript.  Converting to JSON on the local server avoids any crossdomain problems and also converts the data into an easy to work with format.
+These example files import the RSS feed from the Wiredrive CDN to the local server, then convert the data to JSON.  Creating a local proxy of the feed on your server helps avoid cross site validation problems.  Converting the data to JSON creates an easy to work with format in Flash and Javascript.
 
-You are encouraged to use development.php when developing your application, then switch to cache.php when going into production.  Using cache.php will speed up the overall load time of the script.
+We encourage users to use development.php while creating the site, then switch to cache.php when going into production.  Using cache.php will speed up the overall load time of the script and therefore your site.
 
-JSON formatted data comes is the following structure:
+Example usage:
+http://www.example.com/cache.php?callback=processResponse&feed=http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240
+
+
+JSON formatted data comes with the following structure:
 
 {
     "responseData": [

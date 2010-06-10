@@ -81,7 +81,7 @@ class rssToJson
             /*
              * Add entities without children to the response array
              */    
-            if ($element->count() == 0) {
+	    if (0 === count($element->children())) {
                 $name = $element->getName();
                 $elementData[$name] = (string) $element;
                 continue;

@@ -44,7 +44,7 @@ session_start();
  * and transform to JSON on your server or add the
  * feed as a GET variable in the URl
  */
-$rss = 'http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240';
+$rss = 'http://www.wdcdn.net/rss/presentation/library/client/iowa/id/128b053b916ea1f7f20233e8a26bc45d';
 if ($_GET['feed']) {
     $rss = filter_input(INPUT_GET,'feed',FILTER_VALIDATE_URL);
 }

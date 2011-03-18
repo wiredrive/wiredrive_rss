@@ -41,7 +41,7 @@ session_start();
  * URL for the RSS feed
  * Change this to the RSS feed you would like to proxy on your server
  */
-$rss = 'http://www.wdcdn.net/rss/presentation/library/client/merc/id/84b8b5e27e9f55c7417848abb3327240';
+$rss = 'http://www.wdcdn.net/rss/presentation/library/client/iowa/id/128b053b916ea1f7f20233e8a26bc45d';
 
 /*
  * create a MD5 of the URL for caching in the sessions

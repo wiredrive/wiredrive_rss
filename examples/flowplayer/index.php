@@ -126,7 +126,7 @@ $xml = simplexml_load_string($contents);
 <link rel="stylesheet" type="text/css" href="style.css"> 
 
 <!-- Include flowplayer JavaScript file. Provides Flash embedding and provides the Flowplayer API. -->
-<script type="text/javascript" src="flowplayer.js"></script>
+<script type="text/javascript" src="flowplayer/flowplayer-3.2.6.min.js"></script>
 
 </head>
 <body>
@@ -141,9 +141,9 @@ $xml = simplexml_load_string($contents);
 	
 		<!-- this will install flowplayer inside the "player" DIV tag. -->
 		<script>
-			$f("player", "flowplayer.swf", {
+			$f("player", "flowplayer/flowplayer-3.2.7.swf", {
                 clip: {
-                    url: '<?php echo $firstUrl; ?>',
+                    url: '<?php echo $firstFile; ?>',
                     autoPlay: true,
                     autoBuffering: true,
                     scaling: 'fit'

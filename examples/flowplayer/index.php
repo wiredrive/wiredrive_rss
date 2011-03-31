@@ -6,6 +6,9 @@
  * This is an example document illustrating how to load a remote RSS 
  * feed and render its contents into an HTML page
  *
+ * Please make sure to use the latest version of Flowplayer.
+ * http://flowplayer.org/download/index.html
+ *
  * This file will get the RSS feed from the Wiredrive, save and 
  * serve from a local server. 
  *

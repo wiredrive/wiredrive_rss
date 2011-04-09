@@ -19,7 +19,7 @@
 
 /*********************************************************************************
  * Copyright (c) 2010 IOWA, llc dba Wiredrive
- * Authors Adam Portilla and Daniel Bondurant
+ * Authors Adam Portilla, Drew Baker and Daniel Bondurant
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

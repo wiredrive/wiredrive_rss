@@ -33,19 +33,28 @@ $rss = filter_input(INPUT_GET, 'rss', FILTER_VALIDATE_URL);
  * Get Filename to load into flash on initial page load from URL
  */
 $fileName = filter_input(INPUT_GET, 'file', FILTER_SANITIZE_STRING);
+if (empty($fileName)) {
+    $fileName = 'shell.swf';
+}
 
 /*
  * create a MD5 of the URL for caching in the sessions
+ * if a feed url was provided otherwise fall back to the
+ * session
  */
-$sessionKey = 'rss';
+$feedKey = 'feed';
+if ($rss) {
+    $md5_rss = md5($rss);
+}
 
 /*
  * check if this feed exists already in the session and pull it out
  */
-if (isset($_SESSION[$sessionKey])){
-    $contents = $_SESSION[$sessionKey];
-}
 
+$rssKey = 'rss';
+if (isset($_SESSION[$rssKey]) && ($_SESSION[$feedKey] == $md5_rss || $md5_rss == NULL)) {
+    $contents = $_SESSION[$rssKey];
+}
 
 /*
  * read the remote RSS feed from the Wiredrive server 
@@ -53,6 +62,7 @@ if (isset($_SESSION[$sessionKey])){
 if (!isset($contents)){
     $contents = file_get_contents($rss,'r');
 }
+
  
 /*
  * Make sure the RSS feed was opened.  Check the php manual
@@ -61,7 +71,7 @@ if (!isset($contents)){
  * @link: http://www.php.net/manual/en/features.remote-files.php
  */
 if (!$contents) {
-    echo "Unable to RSS feed";
+    echo "Unable to open RSS feed";
     exit;
 }
 
@@ -69,8 +79,11 @@ if (!$contents) {
  * Save the feed to a session for caching using MD5 of the 
  * URL as the session key
  */
-$_SESSION[$sessionKey] = $contents;
-
+$_SESSION[$rssKey] = $contents;
+if ($md5_rss) {
+    $_SESSION[$feedKey] = $md5_rss;
+}
+    
 /*
  * load contents into Simple XML.
  * At this point the RSS feed is converted into a SimpleXML object
@@ -81,7 +94,6 @@ $xml = simplexml_load_string($contents);
  * start the item loop
  */
 foreach ($xml->channel->item as $item) {
-
     /*
      * Find the filename in the RSS feed
      */

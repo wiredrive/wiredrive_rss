@@ -22,11 +22,11 @@ This folder is very similar to /proxy/rss examples. The difference in /proxy/jso
 
 Example Folders:
 
-/example/javascript
-This file contains three example layouts done entirely in Javascript and CSS. The examples convert the RSS feed to JSON data using the Google AJAX Feed APIs site. We feel that JSON is much easier to work with than XML in Javascript.  This is the example to start with if you are working on a server that does not allow any server side scripting.
+/example/flowplayer
+Example for using the flowplayer with the RSS feed
 
-See the Google AJAX Feed APIs for documentation about the conversion:
-http://code.google.com/apis/ajaxfeeds/documentation/reference.html#JSON
+/example/jwplayer
+Example for using the JW Player with the RSS feed
 
 /example/php
 This file contains three example layouts done entirely in PHP and CSS. The RSS feed is converted to PHP objects using SimpleXML.
@@ -34,11 +34,12 @@ This file contains three example layouts done entirely in PHP and CSS. The RSS f
 /example/workshop
 Example site that used at the Wiredrive mRSS workshop.  The example uses code from /proxy/json to convert the RSS feed to JSON before it is loaded into javascript.
 
+/example/sxsw2010
+Example site that uses the RSS feed with a small flash site. 
+
+
 
 Additional Resources:
 
-Wiredrive Google Group has a FAQ, resources, and tips on integrating with the Media RSS Feeds
-http://groups.google.com/group/wiredrive
-
 RSS section of the Wiredrive Website has information on how to get started
-http://www.wiredrive.com/rss
+http://www.wiredrive.com/mrss

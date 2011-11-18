@@ -22,6 +22,8 @@
  * Main bootstrap file for feed test.  This will load all classes into
  * php and set system configurations.
  */
-require_once('../src/dependency.php');
-date_default_timezone_set('America/Los_Angeles');
+$basePath = realpath(dirname(__FILE__) . '/../');
+set_include_path(get_include_path() . PATH_SEPARATOR . $basePath);
 
+require_once('src/dependency.php');
+date_default_timezone_set('America/Los_Angeles');

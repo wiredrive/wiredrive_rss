@@ -42,7 +42,7 @@ class Feed_Parser
      * A list of valid formats that this parser can handle
      * @var array
      */
-    protected $validFormats = array('xml', 'json');
+    protected $validFormats = array('xml', 'json', 'array');
 
     /**
      * Xml
@@ -52,6 +52,15 @@ class Feed_Parser
     protected $xml = null;
 
     /**
+     * Items only
+     * Flag to specify if everything should be returned or just items, 
+     * only applies to json data fetching
+     *
+     * @var bool
+     */
+    protected $itemsOnly = null;
+
+    /**
      * Constructor
      *
      * @param   string      $format
@@ -59,6 +68,7 @@ class Feed_Parser
     public function __construct($format = 'json')
     {
         $this->setFormat($format);
+        $this->setItemsOnly(true);
     }
 
     /**
@@ -89,6 +99,24 @@ class Feed_Parser
     public function getValidFormats()
     {
         return $this->validFormats;
+    }
+
+    /**
+     * @param   bool    $itemsOnly
+     * @return  Feed_Parser
+     */
+    public function setItemsOnly($itemsOnly)
+    {
+        $this->itemsOnly = (bool) $itemsOnly;
+        return $this;
+    }
+
+    /**
+     * @return  bool
+     */
+    public function itemsOnly()
+    {
+        return $this->itemsOnly;
     }
 
     /**
@@ -142,16 +170,17 @@ class Feed_Parser
 
         $this->xml = $xml;
         
-        return $this->processOutput($this->getFormat()); 
+        return $this->processOutput($this->getFormat(), $this->itemsOnly()); 
     }
 
     /**
      * Process the current xml object based on the desired format
      * 
      * @param   string      $format
+     * @param   bool        $itemsOnly
      * @return  mixed
      */
-    public function processOutput($format)
+    public function processOutput($format, $itemsOnly)
     {
         $validFormats = $this->getValidFormats();
         if (! in_array($format, $validFormats)) {
@@ -166,25 +195,43 @@ class Feed_Parser
             case 'xml';
                 return $this->getContents();
             case 'json':
-                return $this->processJson();
+                return $this->processJson($itemsOnly);
+            case 'array':
+                return $this->processArray($itemsOnly);
         }
     }
 
     /**
      * Process Json
-     * Process the currently set xml object as json output.
+     * Convert the array output into json
      *
+     * @param   int     $itemsOnly
      * @return  string
      */
-    protected function processJson()
+    protected function processJson($itemsOnly)
+    {
+        $feedData = $this->processArray($itemsOnly);
+        if (! is_array($feedData)) {
+            throw new Exception('Unexpected data returned');
+        }
+        return json_encode($feedData);
+    }
+
+    /**
+     * Process Array
+     * Process the currently set xml object as a usable array.
+     *
+     * @param   bool    $itemsOnly
+     * @return  string
+     */
+    protected function processArray($itemsOnly)
     {
         $xml = $this->getXml();
-
-        /*
-         * Start the response data array
-         */
         $response = array();
-        
+
+        /* create an array to represent the rss feed */
+        $feedData = array();
+
         /*
          * Get the just the channel object 
          */
@@ -193,131 +240,90 @@ class Feed_Parser
         /*
          * Get any namespaces added to the RSS
          */
-        $ns = $this->xml->getNamespaces(TRUE);
+        $namespaces = $this->xml->getNamespaces(TRUE);
         
-        /*
-         * Cycle though the XML objects.  Conversion with json_encode will not
-         * work because CDATA does not convert, and the media attributes are
-         * difficult to pull out of json data
-         */
-        foreach ($channel->children() as $element) {
-        
-            /*
-            * Start the data array for this child
-            */
-            $elementData = array();
-        
-            /* 
-             * Get the element name and start and array
-             */
-            $elementName = (string) $element->getName();
-        
-            /*
-             * Add entities without children to the response array
-             */    
-            if (0 === count($element->children())) {
-                $name = $element->getName();
-                $elementData[$name] = (string) $element;
-                $response[] = $elementData;
-                continue;
+        if (! $itemsOnly) {
+            foreach ($channel->getChildren() as $property) {
+                
+                /* ignore all items that have children */
+                $children = $property->children();
+                if (count($children)) {
+                    continue;
+                }
+                
+                $attribName = $property->getName();
+                $feedData[$attribName] = (string) $channel->$feedAttrib;
             }
-            
+        }
+
+        /*
+         * process items
+         */
+        $items = array();
+        foreach ($channel->item as $item) {
             /*
              * Add entities with children to the reponse array
-             */    
-            foreach ($element->children() as $item) {
-            
+             */
+            $itemData = array();
+            foreach ($item->children() as $property) {
                 /*
                  * Get the name of the element
                  */
-                $name = $item->getName();
-            
-                /*
-                 * Add items without attributes to the response array
-                 */
-                if (sizeof($item->attributes()) == 0) {
-                    $elementData[$elementName][$name] = (string) $item;  
-                    $response[] = $elementData;
-                    continue;      
+                $propName   = $property->getName();
+                $attributes = $property->attributes(); 
+                if (0 == count($attributes)) {
+                    $propData = (string) $item->$propName;
+                } else {
+                    $propData = array();
+                    foreach ($attributes as $attribute) {
+                        $attribName = $attribute->getName();
+                        $propData[$attribName] = (string) $attribute;
+                    }
                 }
-                
-                /*
-                 * Add the attributes
-                 */
-                foreach ($item->attributes() as $attribute) {
-                    $attributeName = $attribute->getName();
-                    $elementData[$elementName][$name][$attributeName] = (string) $attribute;  
-                }    
-                
+                $itemData[$propName] = $propData;
             }
         
             /*
              * Cycle through any defined names spaces and 
-             * extract the elements
+             * extract the elements, these don't show up in standard children
              */
-            foreach($ns as $name=>$namespace) {
-                $nsChildren = $element->children($namespace);
+            foreach($namespaces as $name => $namespace) {
+                $nsChildren = $item->children($namespace);
                 
                 /*
                  * Cycle through the elements defined for this namespace
                  */  
-                $count = array();
-                foreach($nsChildren as $item) {
-        
+                foreach($nsChildren as $nsItem) {
                     /*
                      * Get the name for this element
                      */
-                    $name = $item->getName();
-        
-                    /*
-                     * Make sure there is a counter for each item and start counting at 0
-                     */
-                    if (!$count[$name]) {
-                        $count[$name] = 0;
-                    }
-                    $i = $count[$name];
-                
+                    $nsItemName = $nsItem->getName();
+                    $nsItemData = array(); 
+                    
                     /*
                      * Add the attributes
                      */
-                    foreach ($item->attributes() as $attribute) {
-                        $attributeName = $attribute->getName();
-                        $elementData[$elementName][$name][$i][$attributeName] = (string) $attribute;  
+                    foreach ($nsItem->attributes() as $attribute) {
+                        $attribName = $attribute->getName();
+                        $nsItemData[$attribName] = (string) $attribute;  
                     }
         
                     /*
                      * Add the value of the element if it exists
                      */
-                    $content = (string) $item;
+                    $content = (string) $nsItem;
                     if (!empty( $content) ) {
-                        $elementData[$elementName][$name][$i]['content'] = $content;  
+                        $nsItemData['content'] = $content;
                     }
-        
-                    /*
-                     * increment the counter for this item
-                     */
-                    $count[$name]++;
+                    
+                    if (! isset($itemData[$nsItemName])) {
+                        $itemData[$nsItemName] = array();
+                    }
+                    $itemData[$nsItemName][] = $nsItemData;
                 }
-            } 
-            
-            $response['responseData'][] = $elementData;
+            }
+            $feedData[] = $itemData;
         }
-        
-        $response['responseStatus'] = 200;
-        
-        /*
-         * JSON encode the response
-         */
-        $json = json_encode($response);
-        
-        /*
-         * Make sure json encoding passed
-         */
-        if (!$json || $json == 'null') {
-            $error['responseStatus'] = 500;
-            $json = json_encode($error);
-        }
-        
-        $this->setJson($json);
+        return $feedData;
     }
 }

@@ -326,4 +326,20 @@ class Feed_Parser
         }
         return $feedData;
     }
+
+    /**
+     * Pull out a propery from the top level feed only.
+     *
+     * @param   string      $propertyName
+     * @return  string
+     */
+    public function getProperty($propertyName)
+    {
+        $xml = $this->getXml();
+        if (null == $xml) {
+            throw new Exception('No feed loaded');
+        }
+        $channel = $xml->channel;
+        return (string) $channel->$propertyName;
+    }
 }

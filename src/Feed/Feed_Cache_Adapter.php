@@ -94,15 +94,17 @@ class Feed_Cache_Adapter
         $cacheDir = $this->getCacheDir();
         if (! file_exists($cacheDir)) {
             $recursive  = true;
-            $result     = mkdir($cacheDir, 0775, $recursive);
+            $result     = @mkdir($cacheDir, 0775, $recursive);
             if (false == $result) {
+                error_log('Failure creating cache directory');
                 return false;
             }
         }
 
         $filePath = $this->getFilePath($cacheKey);
-        $result = file_put_contents($filePath, $contents);
+        $result = @file_put_contents($filePath, $contents);
         if (false === $result) {
+            error_log('Failure creating cache file');
             return false;
         }
         return true;

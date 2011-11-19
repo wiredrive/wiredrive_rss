@@ -1,5 +1,23 @@
 <?php
 
+/*****************************************************************************
+ * Copyright (c) 2011 IOWA, llc dba Wiredrive
+ * Author J.O.D. (Joint Operations/Development)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
+ 
 /*
  * Wiredrive JW Player Playlist Example
  * 
@@ -17,76 +35,29 @@
  *
  */
 
-/*********************************************************************************
- * Copyright (c) 2010 IOWA, llc dba Wiredrive
- * Authors Adam Portilla, Drew Baker and Daniel Bondurant
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/* set up base dir */
+$basePath = realpath(dirname(__FILE__) . '/../../');
+set_include_path(get_include_path() . PATH_SEPARATOR . $basePath);
 
-/*
- * start a session to save the contents of the rss feed
- */
-session_start();
+/* load dependencies */
+require_once('src/dependency.php');
+date_default_timezone_set('America/Los_Angeles');
 
-/*
- * URL for the RSS feed
- * Change this to the RSS feed you would like to proxy on your server
- */
-$rss = 'http://www.wdcdn.net/rss/presentation/library/client/iowa/id/128b053b916ea1f7f20233e8a26bc45d';
+/* rss feed to bring into flowplayer */
+$url    = 'http://www.wdcdn.net/rss/presentation/library/client/iowa/id/128b053b916ea1f7f20233e8a26bc45d';
 
-/*
- * create a MD5 of the URL for caching in the sessions
- */
-$rss_md5 = md5($rss);
+/* config options to send to the manager */
+$config = array(
+    'feedUrl'   => $url,
+    'format'    => 'json',
+    'itemsOnly' => TRUE,
+);
 
-/*
- * check if this feed exists already in the session and pull it out
- */
-if (isset($_SESSION[$rss_md5])){
-    $contents = $_SESSION[$rss_md5];
-}
+/* get the feed */
+$feedManager = new Feed_Manager($config);
+$json_data = $feedManager->process();
 
-/*
- * read the remote RSS feed from the Wiredrive server 
- */
-if (!isset($contents)){
-    $contents = file_get_contents($rss,'r');
-}
-
-/*
- * Make sure the RSS feed was opened.  Check the php manual
- * page on opening remote files if this fails
- *
- * @link: http://www.php.net/manual/en/features.remote-files.php
- */
-if (!$contents) {
-    echo "Unable to RSS feed";
-    exit;
-}
-
-/*
- * Save the feed to a session for caching using MD5 of the 
- * URL as the session key
- */
-$_SESSION[$rss_md5] = $contents;
-
-/*
- * load contents into Simple XML.
- * At this point the RSS feed is converted into a SimpleXML object
- */
-$xml = simplexml_load_string($contents);
+$data = json_decode($json_data, TRUE);
 
 
 ?>
@@ -114,17 +85,12 @@ $xml = simplexml_load_string($contents);
 <body>
     <div class="companyLogo">Wiredrive JW Player Playlist Example<!-- Put your company Logo Here --></div>
     
-    <?php
-        $item = $xml->channel->item;
-        $media = $item->children('http://search.yahoo.com/mrss/');
-    ?>
-
     <div id="player"></div>
     <script type="text/javascript">
       jwplayer('player').setup({
         'flashplayer': 'jwplayer/jwplayer-5.5.swf',
-        'file': '<?php echo $media->content->attributes()->url; ?>',
-        'image': '<?php echo $media->thumbnail[0]->attributes()->url; ?>',
+        'file': '<?php echo $data[0]['content'][0]['url']; ?>',
+        'image': '<?php echo $data[0]['thumbnail'][0]['url']; ?>',
         'width': '640',
         'height': '480',
         'controlbar': 'over',
@@ -139,40 +105,33 @@ $xml = simplexml_load_string($contents);
     /* 
      * start the item loop
      */
-    foreach ($xml->channel->item as $item) {
+    foreach ($data as $item) {
     
-        /*
-         * Get nodes in the media: namespace
-         * This is where the credit types, credits, thumbnails and
-         * main content objects are stored
-         */
-        $media = $item->children('http://search.yahoo.com/mrss/');
-        
     ?>
     <div class="wditem">
         <div class="wdinner">
         <!-- http://www.longtailvideo.com/support/jw-player/jw-player-for-flash-v5/12540/javascript-api-reference -->
-            <a onClick="jwplayer('player').load({'file': '<?php echo $media->content->attributes()->url ?>', 'image': '<?php echo $media->thumbnail[0]->attributes()->url ?>', 'provider': 'http'}).play()" href="#">
+            <a onClick="jwplayer('player').load({'file': '<?php echo $item['content'][0]['url']; ?>', 'image': '<?php echo $item['thumbnail'][0]['url']; ?>', 'provider': 'http'}).play()" href="#">
                 <img src="<?php
             
                 /*
                  * Get the small thumbnail url
                  */
-                echo $media->thumbnail[1]->attributes()->url;
+                echo $item['thumbnail'][1]['url'];
                 
                 ?>" height="<?php
             
                 /*
                  * Get the small thumbnail height
                  */
-                echo $media->thumbnail[1]->attributes()->height;
+                echo $item['thumbnail'][1]['height'];
                 
                 ?>" width="<?php
             
                 /*
                  * Get the small thumbnail width
                  */
-                echo $media->thumbnail[1]->attributes()->width;
+                echo $item['thumbnail'][1]['width'];
                 
                 ?>">
                 
@@ -181,7 +140,7 @@ $xml = simplexml_load_string($contents);
                     /*
                      * Title for this item
                      */
-                     echo $item->title;
+                     echo $item['title'];
                       
                      ?></div>
             </a>
@@ -190,7 +149,7 @@ $xml = simplexml_load_string($contents);
                 /*
                  * Loop through all the credits and credit types
                  */
-                foreach($media->credit as $credit) {
+                foreach($item['credit'] as $credit) {
                 
                 ?>
                 <div>
@@ -201,14 +160,14 @@ $xml = simplexml_load_string($contents);
                          * Upper case the words.  The Credit Types always
                          * come in lower case.
                          */
-                        echo ucwords($credit->attributes()->role); 
+                        echo ucwords($credit['role']); 
                         
                         ?></span> : <span class="wdvalue"><?php 
                         
                         /*
                          * show the credit
                          */
-                        echo $credit; 
+                        echo $credit['content'];
                         
                         ?></span>
                 </div>

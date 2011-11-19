@@ -30,8 +30,6 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $basePath);
 require_once('src/dependency.php');
 date_default_timezone_set('America/Los_Angeles');
 
-$url    = 'http://www.wdcdn.net/rss/presentation/library/client/marketing/id/2e90a1152da32f684139fee43b97dc46/';
-
 /* config options to send to the manager */
 $config = array(
     'feedUrl'   => $url,

@@ -54,6 +54,25 @@ $config = array(
 $feedManager = new Feed_Manager($config);
 $json_data = $feedManager->process();
 
+/* determine the expires time for this feed */   
+$ttl = $feedManager->getParser()->getProperty('ttl');
+$expires = gmdate("r", strtotime('+'. $ttl .' minutes'));    
+
+/* send 304 headers if the client cache is not stale */
+if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+    $modifiedSince = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+    if ((time() - $ttl ) <= $modifiedSince) {
+        header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified', true, 304);
+        exit;
+    }
+} 
+
+/* send cache headers based on the ttl */
+header("Expires: $expires");
+header('Cache-Control: max-age=86400, public');
+header("Last-Modified: " . gmdate("r"));
+header('Content-type: text/html');
+
 $data = json_decode($json_data, TRUE);
 
 ?>

@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
- 
-$url    = 'http://www.wdcdn.net/rss/presentation/library/client/marketing/id/2e90a1152da32f684139fee43b97dc46/';
-require_once('common.php');
+
+/**
+ * Dependency file for the Feed module.  This is useful if you don't have an
+ * autoloader configured.  If you do, please omit this file
+ */
+require_once('src/Feed/Feed_Cache_Adapter.php');
+require_once('src/Feed/Feed_Connector.php');
+require_once('src/Feed/Feed_Parser.php');
+require_once('src/Feed/Feed_Manager.php');

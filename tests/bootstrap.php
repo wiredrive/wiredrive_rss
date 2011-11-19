@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
- 
-$url    = 'http://www.wdcdn.net/rss/presentation/library/client/marketing/id/2e90a1152da32f684139fee43b97dc46/';
-require_once('common.php');
+
+
+/**
+ * Main bootstrap file for feed test.  This will load all classes into
+ * php and set system configurations.
+ */
+$basePath = realpath(dirname(__FILE__) . '/../');
+set_include_path(get_include_path() . PATH_SEPARATOR . $basePath);
+
+require_once('src/dependency.php');
+date_default_timezone_set('America/Los_Angeles');

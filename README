@@ -3,43 +3,45 @@ Example files for use with Wiredrive Media RSS Feeds
 These example files are meant to be a starting place for developers to build websites on Wiredrive Media RSS feeds. The feeds allow developers to build sites using content hosted in Wiredrive. The example files address the most frequent implementation questions we have received.
 
 Flash users:
-If you want to pull the RSS feed into Adobe Flash, put /proxy/rss/cache.php onto your webserver and have Flash point to that file as the RSS feed URL. The cache script will copy the RSS feed from the Wiredrive CDN to your server and then serve it to the browser, thus eliminating the need for crossdomain.xml. 
+If you want to pull the RSS feed into Adobe Flash, look at the json and xml examples.  They are the best starting point for importing the data into Flash. 
 
-See the Yahoo! Developer page on Cross-Domain requests for why this is necessary.
+See the Yahoo! Developer page on Cross-Domain requests for why proxying the feed through your web server is necessary.
 http://developer.yahoo.com/javascript/howto-proxy.html
 
 
 Code Folders:
 
-/proxy/rss
-cache.php imports the RSS feed to the local web server and then serves it to the browser. It is the easiest way to get around any cross site validation dependencies in Flash or Javascript. The contents of the RSS feed are in no way altered. The file accepts the feed as a paramater so the RSS URL does not have to be hard coded in the source.
+/src
+Classes to parse the RSS feed, cache the file locally, and format the output for XML or json.
 
-development.php is the non-caching version of cache.php. We encourage users to use this file while developing the site, then switch to cache.php when going into production
-
-/proxy/json
-This folder is very similar to /proxy/rss examples. The difference in /proxy/json is that the RSS is converted to JSON before being sent to the browser. This example file also accepts a callback function as a parameter. When the callback function is specified, the JSON object is delivered as an argument to the specified callback.
-
+/tests
+unit tests for the Feed classes
 
 Example Folders:
 
 /example/flowplayer
 Example for using the flowplayer with the RSS feed
 
+/example/json
+This file contains a example to output the RSS feed as json. 
+
 /example/jwplayer
 Example for using the JW Player with the RSS feed
 
 /example/php
-This file contains three example layouts done entirely in PHP and CSS. The RSS feed is converted to PHP objects using SimpleXML.
+This file contains a example layout done entirely in PHP and CSS. 
 
-/example/workshop
-Example site that used at the Wiredrive mRSS workshop.  The example uses code from /proxy/json to convert the RSS feed to JSON before it is loaded into javascript.
+/example/php
+This file contains a example layout done entirely in PHP and CSS. 
 
 /example/sxsw2010
 Example site that uses the RSS feed with a small flash site. 
 
+/example/xml
+This file contains a example to output the RSS feed as xml proxied through the server to get around crossdomain problems. 
 
 
 Additional Resources:
 
 RSS section of the Wiredrive Website has information on how to get started
-http://www.wiredrive.com/mrss
+http://www.wiredrive.com/support/getting-started/guide-to-wiredrive-media-rss/

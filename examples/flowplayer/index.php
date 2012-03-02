@@ -132,7 +132,7 @@ $data = json_decode($json_data, TRUE);
                 /*
                  * Get the small thumbnail height
                  */
-                echo $item['thumbnail'][1]['heigth'];
+                echo $item['thumbnail'][1]['height'];
                 
                 ?>" width="<?php
             

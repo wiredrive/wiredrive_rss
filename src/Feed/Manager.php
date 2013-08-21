@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
-namespace Manager;
+namespace Feed;
 
 /**
  * The feed manager is the primary class to handle the feed processing.  It

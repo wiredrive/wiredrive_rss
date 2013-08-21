@@ -309,7 +309,7 @@ class Manager
         $url    = $this->getFeedUrl();
         $feedContents = $this->getContents($url);
         
-        return $this->parser->setContents($feedData)
+        return $this->parser->setContents($feedContents)
                             ->process();
     }
 

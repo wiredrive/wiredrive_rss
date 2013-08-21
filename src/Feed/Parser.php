@@ -49,7 +49,7 @@ class Parser
     /**
      * Xml
      * The xml object that represents the current contents
-     * @var SimpleXMLElement
+     * @var \SimpleXMLElement
      */
     protected $xml = null;
 
@@ -135,7 +135,7 @@ class Parser
     }
 
     /**
-     * @return  SimpleXMLElement
+     * @return  \SimpleXMLElement
      */
     protected function getXml()
     {
@@ -165,7 +165,7 @@ class Parser
         }
 
         try {
-            $xml = new SimpleXMLElement($contents);
+            $xml = new \SimpleXMLElement($contents);
         } catch (\Exception $exception) {
             throw new \Exception('Failed parsing contents', 1, $exception);
         }
@@ -190,7 +190,7 @@ class Parser
         }
         
         $xml = $this->getXml();
-        if (! $xml instanceof SimpleXMLElement) {
+        if (! $xml instanceof \SimpleXMLElement) {
             throw new \Exception('Cannot process an non-existant feed');
         }
         switch ($format) {

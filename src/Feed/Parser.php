@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
+namespace Feed;
+
 /**
  * Simple feed parsing class.  Does some validation and data conversion for
  * convinience but it is not a full parsing library.
  */
-class Feed_Parser 
+class Parser 
 {
     /**
      * Contents
@@ -73,7 +75,7 @@ class Feed_Parser
 
     /**
      * @param   string      $format
-     * @return  Feed_Parser
+     * @return  Parser
      */
     public function setFormat($format)
     {
@@ -103,7 +105,7 @@ class Feed_Parser
 
     /**
      * @param   bool    $itemsOnly
-     * @return  Feed_Parser
+     * @return  Parser
      */
     public function setItemsOnly($itemsOnly)
     {
@@ -123,7 +125,7 @@ class Feed_Parser
      * When setting content, the current parsed xml feed is destroyed
      *
      * @param   string      $contents
-     * @return  Feed_Parser
+     * @return  Parser
      */
     public function setContents($contents)
     {

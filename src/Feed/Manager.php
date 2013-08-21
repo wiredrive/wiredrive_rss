@@ -105,7 +105,7 @@ class Manager
     public function setFeedUrl($url)
     {
         if (empty($url)) {
-            throw new Exception('Feed urls cannot be empty');
+            throw new \Exception('Feed urls cannot be empty');
         }
         $this->feedUrl = $url;
         return $this;
@@ -326,12 +326,12 @@ class Manager
         $connector  = $this->getConnector();
         
         if (empty($url)) {
-            throw new Exception('Invalid feed url supplied');
+            throw new \Exception('Invalid feed url supplied');
         }
 
         $contents  = $connector->fetchData($url);
         if (false == $contents) {
-            throw new Exception('Failed retrieved data');
+            throw new \Exception('Failed retrieved data');
         }
         return $contents;
     }

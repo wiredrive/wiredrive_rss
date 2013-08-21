@@ -77,7 +77,7 @@ class Connector
     public function fetchData($url)
     {
         if (empty($url)) {
-            throw new Exception('Url cannot be empty');
+            throw new \Exception('Url cannot be empty');
         }
         $response = $this->initialize()
                          ->sendRequest($url);

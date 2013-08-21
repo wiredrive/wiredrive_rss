@@ -81,7 +81,7 @@ class Parser
     {
         $validFormats = $this->getValidFormats();
         if (! in_array($format, $validFormats)) {
-            throw new Exception('Invalid parsing format');
+            throw new \Exception('Invalid parsing format');
         }
         $this->format = $format;
         return $this;
@@ -161,13 +161,13 @@ class Parser
     {
         $contents = $this->getContents();
         if (empty($contents)) {
-            throw new Exception('Invalid contents for feed processing');
+            throw new \Exception('Invalid contents for feed processing');
         }
 
         try {
             $xml = new SimpleXMLElement($contents);
-        } catch (Exception $exception) {
-            throw new Exception('Failed parsing contents', 1, $exception);
+        } catch (\Exception $exception) {
+            throw new \Exception('Failed parsing contents', 1, $exception);
         }
 
         $this->xml = $xml;
@@ -186,12 +186,12 @@ class Parser
     {
         $validFormats = $this->getValidFormats();
         if (! in_array($format, $validFormats)) {
-            throw new Exception('Invalid format requested');
+            throw new \Exception('Invalid format requested');
         }
         
         $xml = $this->getXml();
         if (! $xml instanceof SimpleXMLElement) {
-            throw new Exception('Cannot process an non-existant feed');
+            throw new \Exception('Cannot process an non-existant feed');
         }
         switch ($format) {
             case 'xml';
@@ -214,7 +214,7 @@ class Parser
     {
         $feedData = $this->processArray($itemsOnly);
         if (! is_array($feedData)) {
-            throw new Exception('Unexpected data returned');
+            throw new \Exception('Unexpected data returned');
         }
         return json_encode($feedData);
     }
@@ -339,7 +339,7 @@ class Parser
     {
         $xml = $this->getXml();
         if (null == $xml) {
-            throw new Exception('No feed loaded');
+            throw new \Exception('No feed loaded');
         }
         $channel = $xml->channel;
         return (string) $channel->$propertyName;

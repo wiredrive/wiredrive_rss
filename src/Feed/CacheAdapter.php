@@ -26,7 +26,7 @@ namespace Feed;
  * url and the file's modified date is used to determine if the file needs to
  * be updated.
  */
-class Cache_Adapter 
+class CacheAdapter 
 {
     /**
      * Cache Dir
@@ -47,7 +47,7 @@ class Cache_Adapter
 
     /**
      * @param   string      $cacheDir
-     * @return  Cache_Adapter
+     * @return  CacheAdapter
      */
     public function setCacheDir($cacheDir)
     {

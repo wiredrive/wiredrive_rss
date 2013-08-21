@@ -48,7 +48,7 @@ class Manager
      * set to a different mechanism prior to data fetching so long as the
      * interface is followed.
      *
-     * @var Cache_Adapter
+     * @var CacheAdapter
      */
     protected $cacheAdapter = null;
 
@@ -79,7 +79,7 @@ class Manager
     {
         $this->setConnector(new Connector())
              ->setParser(new Parser())
-             ->setCacheAdapter(new Cache_Adapter());
+             ->setCacheAdapter(new CacheAdapter());
 
         if (array_key_exists('feedUrl', $config)) {
             $this->setFeedUrl($config['feedUrl']);
@@ -120,17 +120,17 @@ class Manager
     }
     
     /**
-     * @param   Cache_Adapter  $adapter
+     * @param   CacheAdapter  $adapter
      * @return  Manager
      */
-    public function setCacheAdapter(Cache_Adapter $adapter)
+    public function setCacheAdapter(CacheAdapter $adapter)
     {
         $this->cacheAdapter = $adapter;
         return $this;
     }
     
     /**
-     * @return  Cache_Adapter
+     * @return  CacheAdapter
      */
     public function getCacheAdapter()
     {

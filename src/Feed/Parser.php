@@ -321,7 +321,11 @@ class Parser
                     if (! isset($itemData[$nsItemName])) {
                         $itemData[$nsItemName] = array();
                     }
-                    $itemData[$nsItemName][] = $nsItemData;
+                    if (! is_array($itemData[$nsItemName])) {
+                        $itemData[$nsItemName] = $nsItemData;                   
+                    } else {
+                        $itemData[$nsItemName][] = $nsItemData;
+                    } 
                 }
             }
             $feedData[] = $itemData;

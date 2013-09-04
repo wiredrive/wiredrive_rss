@@ -30,16 +30,23 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $basePath);
 require_once('src/dependency.php');
 date_default_timezone_set('America/Los_Angeles');
 
+$feed = null;
+
 /* support multiple feeds */
 if (! isset($_GET['feed'])) {
-    header('Missing feed', true, 400);
-    exit;
+    // default to the wiredrive feed
+    $feed = 'wd';
+} else {
+    $feed = $_GET['feed'];
 }
 
 $url    = '';
-$feed   = $_GET['feed'];
 
-/* whitelist of RSS feeds */
+/* whitelist of RSS feeds.
+   Ideally you don't want your feed parser to be an open proxy,
+   so the feed querystring value is a key that resolves to a whitelist
+   of allowed feed urls.
+*/
 switch ($feed) { 
     case 'wd':
         $url = 'http://www.wdcdn.net/rss/presentation/library/client/iowa/id/128b053b916ea1f7f20233e8a26bc45d'; 

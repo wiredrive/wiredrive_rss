@@ -77,7 +77,7 @@ $data = json_decode($json_data, TRUE);
 <link rel="stylesheet" type="text/css" href="style.css"> 
 
 <!-- Include flowplayer JavaScript file. Provides Flash embedding and provides the Flowplayer API. -->
-<script type="text/javascript" src="flowplayer/flowplayer-3.2.6.min.js"></script>
+<script type="text/javascript" src="flowplayer/flowplayer-3.2.12.min.js"></script>
 
 </head>
 <body>
@@ -92,7 +92,7 @@ $data = json_decode($json_data, TRUE);
 	
 		<!-- this will install flowplayer inside the "player" DIV tag. -->
 		<script>
-			$f("player", "flowplayer/flowplayer-3.2.7.swf", {
+			$f("player", "flowplayer/flowplayer-3.2.16.swf", {
                 clip: {
                     url: '<?php echo $data[0]['content'][0]['url']; ?>',
                     autoPlay: true,

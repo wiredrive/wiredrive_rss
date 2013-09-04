@@ -79,7 +79,7 @@ $data = json_decode($json_data, TRUE);
 
 <!-- Load the JW Embbeder Script -->
 <!-- http://www.longtailvideo.com/support/jw-player/jw-player-for-flash-v5/15995/jw-embedder-reference-guide -->
-<script type='text/javascript' src='jwplayer/jwplayer-5.5.js'></script>
+<script type='text/javascript' src='jwplayer/jwplayer.js'></script>
 
 </head>
 <body>
@@ -88,14 +88,10 @@ $data = json_decode($json_data, TRUE);
     <div id="player"></div>
     <script type="text/javascript">
       jwplayer('player').setup({
-        'flashplayer': 'jwplayer/jwplayer-5.5.swf',
         'file': '<?php echo $data[0]['content'][0]['url']; ?>',
         'image': '<?php echo $data[0]['thumbnail'][0]['url']; ?>',
         'width': '640',
-        'height': '480',
-        'controlbar': 'over',
-        'provider': 'http',
-        'http.startparam': 'ec_seek'
+        'height': '480'
       });
     </script>     
 

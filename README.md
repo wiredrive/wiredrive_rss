@@ -1,5 +1,4 @@
-Example files for use with Wiredrive Media RSS Feeds
-=======
+## Example files for use with Wiredrive Media RSS Feeds
 
 These example files are meant to be a starting place for developers to build websites using Wiredrive media RSS feeds. The feeds allow developers to build sites using content hosted in Wiredrive. The example files address the most frequent implementation questions we have received.
 
@@ -11,29 +10,16 @@ See the Yahoo! Developer page on [Cross-Domain requests](http://developer.yahoo.
 
 ## Code Folders:
 
-/src
-Classes to parse the RSS feed, cache the file locally, and format the output for XML or json.
+* `/src`: Classes to parse the RSS feed, cache the file locally, and format the output for XML or json.
+* `/tests`: unit tests for the Feed classes
 
-/tests
-unit tests for the Feed classes
+## Example Folders:
 
-Example Folders:
-
-/example/flowplayer
-Example for using the flowplayer with the RSS feed
-
-/example/json
-This file contains a example to output the RSS feed as raw json data. 
-
-/example/jwplayer
-Example for using the JW Player with the RSS feed.
-
-/example/php
-This file contains a example layout done entirely in PHP and CSS. 
-
-/example/xml
-This file contains a example to output the unaltered RSS feed proxied and cached through the local server to get around crossdomain problems. 
-
+* `/example/flowplayer`: Example for using the flowplayer with the RSS feed
+* `/example/json`: This file contains a example to output the RSS feed as raw json data. 
+* `/example/jwplayer`: Example for using the JW Player with the RSS feed.
+* `/example/php`: This file contains a example layout done entirely in PHP and CSS. 
+* `/example/xml`: This file contains a example to output the unaltered RSS feed proxied and cached through the local server to get around crossdomain problems. 
 
 ## Additional Resources:
 

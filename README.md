@@ -1,15 +1,15 @@
 Example files for use with Wiredrive Media RSS Feeds
+=======
 
 These example files are meant to be a starting place for developers to build websites using Wiredrive media RSS feeds. The feeds allow developers to build sites using content hosted in Wiredrive. The example files address the most frequent implementation questions we have received.
 
-Flash users:
-If you want to import the RSS data into Adobe Flash, look at the json and xml examples.  These examples are for proxing the raw data from the RSS feed to your local server to get around crossdomain problems. 
+### Flash users:
+If you want to import the RSS data into Adobe Flash, look at the json and xml examples.  These examples are for proxing the raw data from the RSS feed to your local server to get around crossdomain problems. Note, however, that these examples only proxy the *RSS feed itself*, **not** the media files themselves.
 
-See the Yahoo! Developer page on Cross-Domain requests for why proxying the feed through your web server is necessary.
-http://developer.yahoo.com/javascript/howto-proxy.html
+See the Yahoo! Developer page on [Cross-Domain requests](http://developer.yahoo.com/javascript/howto-proxy.html) for why proxying the feed through your web server is necessary.
 
 
-Code Folders:
+## Code Folders:
 
 /src
 Classes to parse the RSS feed, cache the file locally, and format the output for XML or json.
@@ -35,7 +35,6 @@ This file contains a example layout done entirely in PHP and CSS.
 This file contains a example to output the unaltered RSS feed proxied and cached through the local server to get around crossdomain problems. 
 
 
-Additional Resources:
+## Additional Resources:
 
-RSS section of the Wiredrive website has information on how to get started
-http://www.wiredrive.com/support/getting-started/guide-to-wiredrive-media-rss/
+RSS section of the Wiredrive website has information on how to [get started](http://www.wiredrive.com/support/getting-started/guide-to-wiredrive-media-rss/).

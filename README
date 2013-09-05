@@ -31,9 +31,6 @@ Example for using the JW Player with the RSS feed.
 /example/php
 This file contains a example layout done entirely in PHP and CSS. 
 
-/example/sxsw2010
-Example site that uses the RSS feed with a small flash site based on multiple RSS feeds.
-
 /example/xml
 This file contains a example to output the unaltered RSS feed proxied and cached through the local server to get around crossdomain problems. 
 

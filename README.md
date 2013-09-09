@@ -1,5 +1,6 @@
-## Example files for use with Wiredrive Media RSS Feeds
+## Using Wiredrive Media RSS Feeds
 
+This repository
 These example files are meant to be a starting place for developers to build websites using Wiredrive media RSS feeds. The feeds allow developers to build sites using content hosted in Wiredrive. The example files address the most frequent implementation questions we have received.
 
 ### Flash users:

@@ -1,7 +1,7 @@
 <?php
 /*****************************************************************************
- * Copyright (c) 2011 IOWA, llc dba Wiredrive
- * Author J.O.D. (Joint Operations/Development)
+ * Copyright (c) 2013 IOWA, llc dba Wiredrive
+ * Author Wiredrive
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,29 @@
  ****************************************************************************/
 
 /**
- * Example file to retrieve RSS feed, convert to json and ouput
- * to the browser
+    Example file to proxy an RSS feed and output it as XML.
+
+    Defaults to serving a hard-coded RSS url as XML. For a little bit of added
+    versitility, we add the ability to specify a specific feed url via a "key":
+
+    http://example.com/xml-proxy.php
+    http://example.com/xml-proxy.php?feed=wd
+
+    Note that "feed" is a key string, **not** an RSS url. This provides a whitelist
+    of known feeds that can be returned so that this proxy is not completely open for
+    any user to request anything from anywhere.
  */
  
+// Set up our whitelist
+$URLS = array(
+   //the default RSS feed that will be used if no specific feed is requested
+    'default' => 'http://www.wdcdn.net/rss/presentation/library/client/iowa/id/128b053b916ea1f7f20233e8a26bc45d',
+
+    //a specific presentation, keyed by 'wd'
+    //(obviously, the same presentation as the default, but you get the idea)
+    'wd' => 'http://www.wdcdn.net/rss/presentation/library/client/iowa/id/128b053b916ea1f7f20233e8a26bc45d'
+);
+
 /* set up base dir */
 $basePath = realpath(dirname(__FILE__) . '/../../');
 set_include_path(get_include_path() . PATH_SEPARATOR . $basePath);
@@ -30,37 +49,25 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $basePath);
 require_once('src/dependency.php');
 date_default_timezone_set('America/Los_Angeles');
 
-$feed = null;
+//try and GET the feed key being requested
+$feed = filter_input(INPUT_GET, 'feed', FILTER_SANITIZE_STRING); //the feed key
+$url = null;
 
-/* support multiple feeds */
-if (! isset($_GET['feed'])) {
-    // default to the wiredrive feed
-    $feed = 'wd';
-} else {
-    $feed = $_GET['feed'];
-}
-
-$url    = '';
-
-/* whitelist of RSS feeds.
-   Ideally you don't want your feed parser to be an open proxy,
-   so the feed querystring value is a key that resolves to a whitelist
-   of allowed feed urls.
-*/
-switch ($feed) { 
-    case 'wd':
-        $url = 'http://www.wdcdn.net/rss/presentation/library/client/iowa/id/128b053b916ea1f7f20233e8a26bc45d'; 
-        break;
-}
-if (empty($url)) {
-    header('Missing feed', true, 400);
+if (array_key_exists($feed, $URLS)) {
+    $url = $URLS[$feed];
+} else if (!is_null($feed)) {
+    //request for a specific feed that isn't in our whitelist. Error
+    header('Feed not found', true, 400);
     exit;
+} else {
+    //No feed givin. Default to the (ahem) "default" feed.
+    $url = $URLS['default'];
 }
 
-/* config options to send to the manager */
+/* config options to send to the feed manager class */
 $config = array(
     'feedUrl'   => $url,
-    'format'    => 'json',
+    'format'    => 'xml', // <-- we want XML data
 );
 
 /* get the feed */
@@ -78,7 +85,7 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
         header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified', true, 304);
         exit;
     }
-} 
+}
 
 /*
  * check if the client will accept it gzip using the server headers
@@ -115,6 +122,6 @@ header("Content-Length: ". strlen($output));
 header("Expires: $expires");
 header('Cache-Control: max-age=86400, public');
 header("Last-Modified: " . gmdate("r"));
-header('Content-type: application/json');
+header('Content-type: text/xml'); // <-- We are sending back XML data!
 
 echo $output;

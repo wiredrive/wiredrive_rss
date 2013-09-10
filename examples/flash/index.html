@@ -1,0 +1,125 @@
+<!--
+/*****************************************************************************
+ * Copyright (c) 2011 IOWA, llc dba Wiredrive
+ * Author Wiredrive
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
+ 
+/*
+ * Wiredrive Flash Video Player Example
+ * 
+ * This is an example document illustrating how to load a remote RSS 
+ * feed, render its contents into an HTML page, and add a Flash video player
+ * [Adobe Strobe] that can play the contents.
+ *
+ * This file will get the RSS feed from Wiredrive via the JSONP proxy example.
+ *
+ * Contents of the RSS feed are saved to a session so a request is not
+ * going to the Wiredrive servers on every request.
+ */
+ -->
+<html>
+    <head> 
+        <title>Wiredrive Flash Player Example</title>
+        <meta name="description" content="This is an example document illustrating how to load a remote RSS feed, render its contents into an HTML page, and play the videos using Flash (Adobe Strobe)" >
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+        <meta http-equiv="Content-Language" content="en-US" >
+        <meta http-equiv="expires" content="Wed, 19 Feb 2020 16:46:30 GMT" >
+        <meta http-equiv="pragma" content="cache" >
+        <meta http-equiv="Cache-Control" content="cache" >
+         
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" media="screen" />
+        <style type="text/css">
+.row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.wd-item a.thumbnail {
+    height: 165px;
+}
+
+#player {
+    text-align: center;
+}
+        </style>
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo">
+                Flash Video Player Example
+            </div>
+        
+            <div id="player">
+                <object width="640" height="352">
+                    <param name="movie" value="http://fpdownload.adobe.com/strobe/FlashMediaPlayback.swf"></param>
+                    <param name="flashvars" value=""></param>
+                    <param name="allowFullScreen" value="true"></param>
+                    <param name="allowscriptaccess" value="always"></param>
+                    <embed src="http://fpdownload.adobe.com/strobe/FlashMediaPlayback.swf" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="352" flashvars=""></embed>
+                </object>
+            </div>
+
+            <div class="wd-item-container">
+
+            </div>
+        </div>
+
+        <script type="text/javascript">
+(function () {
+    "use strict";
+
+    /**
+        The JSONP callback function. This will take the JSON data returned
+        by the proxy, parse it into the markup structure we want, and
+        inject it into the DOM.
+     */
+    window.processData = function (json) {
+        var $container = $('.wd-item-container'),
+            $row, asset, thumbnail;
+
+        for (var i = 0; i < json.length; i++) {
+            asset = json[i];
+            thumbnail = asset.thumbnail[2]; //"small" thumbnail
+
+            //cast thumbnail dimensions to Numbers
+            thumbnail.height = +thumbnail.height;
+            thumbnail.width = +thumbnail.width;
+
+            // 4 images per row
+            if (i % 4 === 0) {
+                $row = $('<div class="row"></div>');
+                $container.append($row);
+            }
+
+            $row.append([
+                '<div class="col-md-3 wd-item">',
+                    '<a href="#" class="thumbnail" >',
+                        '<img src="', thumbnail.url, '" ',
+                             //offset the height to vertically center image in old browsers
+                             'style="margin-top: ', (80 - thumbnail.height) / 2, 'px;" ',
+                        '/>',
+                    '</a>',
+                '</div>'
+            ].join(''));
+        }
+    };
+}());
+        </script>
+        <script type="text/javascript" src="../json/json-proxy.php?callback=processData"></script>
+    </body>
+</html>

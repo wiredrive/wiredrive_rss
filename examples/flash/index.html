@@ -55,6 +55,10 @@ h2 {
     text-align: center;
 }
 
+object {
+    background-color: #000;
+}
+
 .wiredrive-logo-image {
     position: absolute;
     top: 195px;
@@ -92,12 +96,31 @@ h2 {
 #player {
     margin-left: auto;
     margin-right: auto;
-    width: 540px;
+    width: 640px;
     height: 352px;
     padding-bottom: 20px;
     border-bottom: 1px solid #ccc;
     margin-bottom: 40px;
     margin-top: 20px;
+    position: relative;
+}
+
+#poster {
+    width: 640px;
+    height: 352px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    text-align: center;
+    background-color: #000;
+    z-index: 100;
+}
+
+.play-button-image {
+    cursor: pointer;
+    position: absolute;
+    margin-top: 126px;
+    margin-left: 270px;
 }
         </style>
 
@@ -114,6 +137,10 @@ h2 {
                 <div id="flash-replace">
                     You do not appear to have flash installed.
                 </div>
+                <div id="poster">
+
+                    <div class="play-button-image"></div>
+                </div>
             </div>
 
             <div class="wd-item-container">
@@ -126,9 +153,8 @@ h2 {
 (function () {
     "use strict";
 
-    var currentUrl, //a place to store the URL of the currently playing asset
-        isFlashReady = false;
-
+        //is the flash player initialized?
+    var isFlashReady = false;
 
     /**
         The JSONP callback function. This will take the JSON data returned
@@ -137,19 +163,16 @@ h2 {
      */
     window.processData = function (json) {
         var $container = $('.wd-item-container'),
-            $row, credits, asset, thumbnail, url;
 
-        //stash the url of the first video so we can initialize Flash with it
-        currentUrl = json[0].content[0].url.replace(/^http:/, 'https:');
+            //stash the url of the first video so we can initialize Flash with it
+            firstUrl = json[0].content[0].url,
+            $row, credits, asset, thumbnail, url;
 
         // loop through all assets returned by JSONP
         for (var i = 0; i < json.length; i++) {
             asset = json[i];
 
-            //TODO: Currently all requests to the CDN are redirected to the SSL
-            //equivalent URL, which causes Firefox to not play videos.
-            // JOSH: MAEK FIX!!!
-            url = asset.content[0].url.replace(/^http:/, 'https:'); //grab the url of the video
+            url = asset.content[0].url; //grab the url of the video
             thumbnail = asset.thumbnail[2]; //"small" thumbnail
 
             //cast thumbnail dimensions to Numbers
@@ -192,14 +215,14 @@ h2 {
         }
 
         // we have data now, so initialize the flash player
-        attachFlashPlayer();
+        attachFlashPlayer(json[0]);
     };
 
 
     /**
         Function to embed the Flash Video Player (Adobe Strobe) onto the page.
      */
-    function attachFlashPlayer() {
+    function attachFlashPlayer(asset) {
         var flashvars = {
                 javascriptCallbackFunction: '_strobeCallback',
 
@@ -207,7 +230,7 @@ h2 {
                 // attribute is a querystring itself, we need to encode our URL for the video,
                 // otherwise the querystring of the URL will blend with the querystring that is
                 // flashvars itself and your video won't load!
-                src: encodeURIComponent(currentUrl),
+                src: encodeURIComponent(asset.content[0].url),
 
                 // Strobe has an annoying bug with its poster image. It will reappear whenever
                 // you swap sources, and there is no way to change the poster image after the
@@ -216,9 +239,15 @@ h2 {
                 playButtonOverlay: false
             },
             params = {
+                //if you don't set wmode to transparent, you're going to have a bad
+                //time with z-indicies in IE
+                wmode: 'transparent',
                 allowFullScreen: 'true',
                 allowscriptaccess: 'always'
-            };
+            },
+
+            // large image thumbnail to use for the poster image
+            $img = makePosterImage(asset);
 
         // strobe callback function that will be called when Strobe has initialized
         // and we can interact with it via javascript
@@ -238,18 +267,61 @@ h2 {
             params
         );
 
+        //add the poster image
+        $('#poster').append($img);
+
+        // bind a delegator that will respond to click events from the thumbnail grid,
+        // grab the media url from the DOM element, load it, and play it.
         $('.container').on('click', 'a.thumbnail', function (e) {
             var player;
 
             if (isFlashReady) {
+                $('#poster').remove(); //make sure to remove the poster image, if it's still there
                 player = $('object').get(0);
                 player.setSrc($(e.currentTarget).data('media-url'));
                 player.load();
                 player.play2();
             } else {
+                // don't bother jumping to the top of the page if there is
+                // no player ready
                 e.preventDefault();
             }
         });
+
+        // bind to play button on the poster image
+        $('.play-button-image').on('click', function (e) {
+            $(e.target).parent('#poster').remove();
+            $('object').get(0).play2();
+        });
+    }
+
+
+    /**
+        Helper function to create a poster image. Creates the image DOM
+        element, sets the source, and sets the scale so that the poster image fits
+        nicely in the size of the player without skewing the aspect ratio
+     */
+    function makePosterImage(asset) {
+        var $img = $('<img />'),
+            $container = $('#poster'),
+            thumbnail = asset.thumbnail[0],
+
+            ratio = +thumbnail.width / +thumbnail.height,
+            pRatio = $container.width() / $container.height();
+
+        if (ratio < pRatio) {
+            $img.css({
+                width: 'auto', height: '100%'
+            });
+        } else {
+            $img.css({
+                width: '100%', height: 'auto'
+            });
+        }
+
+        $img.attr('src', thumbnail.url);
+
+        return $img;
     }
 }());
         </script>

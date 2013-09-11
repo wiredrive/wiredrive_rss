@@ -73,21 +73,35 @@ if (array_key_exists($feed, $URLS)) {
 
 /*
     See if there is a callback. If there is, then we are returning JSONP instead of just JSON.
-    The callback string is being sanitized to strip out quotes, which allows for namespacing
-    your callback function:
+    
+    is_valid_callback function provided by:
+        http://www.geekality.net/2010/06/27/php-how-to-easily-provide-json-and-jsonp/
 
-        VALID:
-            processJSON
-            someObject.processJSON
-            _processJSON
-            getProcessor().process
-
-        INVALID:
-            someObject['some-key'].processJSON
-
+    This validator does NOT conform to the ideal padding rules specified by http://www.json-p.org.
+    It can not namespace (the regex does not allow period characters, quotes, or brakets. It only
+    allows callback strings that are valid variable names in JavaScript (accounting for non-latin
+    characters)
 */
-$callback = filter_input(INPUT_GET, 'callback', FILTER_SANITIZE_STRING);
+function is_valid_callback($subject) {
+    $identifier_syntax = '/^[$_\p{L}][$_\p{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\x{200C}\x{200D}]*+$/u';
 
+    $reserved_words = array('break', 'do', 'instanceof', 'typeof', 'case',
+      'else', 'new', 'var', 'catch', 'finally', 'return', 'void', 'continue',
+      'for', 'switch', 'while', 'debugger', 'function', 'this', 'with',
+      'default', 'if', 'throw', 'delete', 'in', 'try', 'class', 'enum',
+      'extends', 'super', 'const', 'export', 'import', 'implements', 'let',
+      'private', 'public', 'yield', 'interface', 'package', 'protected',
+      'static', 'null', 'true', 'false');
+
+    return preg_match($identifier_syntax, $subject)
+        && ! in_array(mb_strtolower($subject, 'UTF-8'), $reserved_words);
+}
+
+$callback = null;
+
+if (isset($_GET['callback']) && is_valid_callback($_GET['callback'])) {
+    $callback = $_GET['callback'];
+}
 
 /* config options to send to the manager */
 $config = array(

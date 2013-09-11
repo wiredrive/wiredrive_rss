@@ -41,10 +41,48 @@
         <meta http-equiv="Cache-Control" content="cache" >
          
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" media="screen" />
+        <link rel="stylesheet" href="../images.css" />
         <style type="text/css">
+@media all {
+    .container {
+        width: 970px;
+        max-width: 970px;
+        min-width: 970px;
+    }
+}
+
+h2 {
+    text-align: center;
+}
+
+.wiredrive-logo-image {
+    position: absolute;
+    top: 195px;
+}
+
 .row {
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+.wd-item {
+    text-align: center;
+}
+
+.wd-title {
+    font-weight: bold;
+    text-align: center;
+}
+
+.wd-credit-container {
+    font-size: 10px;
+}
+
+.wd-credit-type {
+    text-transform: capitalize;
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: bold;
 }
 
 .wd-item a.thumbnail {
@@ -52,7 +90,14 @@
 }
 
 #player {
-    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 540px;
+    height: 352px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 40px;
+    margin-top: 20px;
 }
         </style>
 
@@ -60,18 +105,15 @@
     </head>
     <body>
         <div class="container">
-            <div class="logo">
-                Flash Video Player Example
-            </div>
+            <a href="http://www.wiredrive.com">
+                <span class="wiredrive-logo-image"></span>
+            </a>
+            <h2>Flash Video Player Example</h2>
         
             <div id="player">
-                <object width="640" height="352">
-                    <param name="movie" value="http://fpdownload.adobe.com/strobe/FlashMediaPlayback.swf"></param>
-                    <param name="flashvars" value=""></param>
-                    <param name="allowFullScreen" value="true"></param>
-                    <param name="allowscriptaccess" value="always"></param>
-                    <embed src="http://fpdownload.adobe.com/strobe/FlashMediaPlayback.swf" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="352" flashvars=""></embed>
-                </object>
+                <div id="flash-replace">
+                    You do not appear to have flash installed.
+                </div>
             </div>
 
             <div class="wd-item-container">
@@ -79,9 +121,14 @@
             </div>
         </div>
 
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
         <script type="text/javascript">
 (function () {
     "use strict";
+
+    var currentUrl, //a place to store the URL of the currently playing asset
+        isFlashReady = false;
+
 
     /**
         The JSONP callback function. This will take the JSON data returned
@@ -90,10 +137,19 @@
      */
     window.processData = function (json) {
         var $container = $('.wd-item-container'),
-            $row, asset, thumbnail;
+            $row, credits, asset, thumbnail, url;
 
+        //stash the url of the first video so we can initialize Flash with it
+        currentUrl = json[0].content[0].url.replace(/^http:/, 'https:');
+
+        // loop through all assets returned by JSONP
         for (var i = 0; i < json.length; i++) {
             asset = json[i];
+
+            //TODO: Currently all requests to the CDN are redirected to the SSL
+            //equivalent URL, which causes Firefox to not play videos.
+            // JOSH: MAEK FIX!!!
+            url = asset.content[0].url.replace(/^http:/, 'https:'); //grab the url of the video
             thumbnail = asset.thumbnail[2]; //"small" thumbnail
 
             //cast thumbnail dimensions to Numbers
@@ -106,18 +162,95 @@
                 $container.append($row);
             }
 
+            credits = [];
+
+            // build credit markup
+            for (var j = 0; j < asset.credit.length; j++) {
+                credits.push(
+                    '<div>',
+                        '<span class="wd-credit-type">', asset.credit[j].role, ':</span>',
+                        '<span class="wd-credit">', asset.credit[j].content, '</span>',
+                    '</div>'
+                );
+            }
+
+            // build and insert item markup
             $row.append([
                 '<div class="col-md-3 wd-item">',
-                    '<a href="#" class="thumbnail" >',
+                    '<a href="#" class="thumbnail" data-media-url="', url, '">',
                         '<img src="', thumbnail.url, '" ',
                              //offset the height to vertically center image in old browsers
                              'style="margin-top: ', (80 - thumbnail.height) / 2, 'px;" ',
                         '/>',
                     '</a>',
+                    '<div class="wd-title">', asset.title, '</div>',
+                    '<div class="wd-credit-container">',
+                        credits.join(''),
+                    '</div>',
                 '</div>'
             ].join(''));
         }
+
+        // we have data now, so initialize the flash player
+        attachFlashPlayer();
     };
+
+
+    /**
+        Function to embed the Flash Video Player (Adobe Strobe) onto the page.
+     */
+    function attachFlashPlayer() {
+        var flashvars = {
+                javascriptCallbackFunction: '_strobeCallback',
+
+                // IMPORTANT! Asset media urls contain querystrings, but since the "flashvars"
+                // attribute is a querystring itself, we need to encode our URL for the video,
+                // otherwise the querystring of the URL will blend with the querystring that is
+                // flashvars itself and your video won't load!
+                src: encodeURIComponent(currentUrl),
+
+                // Strobe has an annoying bug with its poster image. It will reappear whenever
+                // you swap sources, and there is no way to change the poster image after the
+                // player has initialized. So we're going to ignore Strobe's poster image
+                // and just make our own by positioning an image overlay over the strobe player
+                playButtonOverlay: false
+            },
+            params = {
+                allowFullScreen: 'true',
+                allowscriptaccess: 'always'
+            };
+
+        // strobe callback function that will be called when Strobe has initialized
+        // and we can interact with it via javascript
+        window._strobeCallback = function (id, eventName, updatedProperties) {
+            isFlashReady = true;
+        };
+
+        // embed the Strobe Player
+        window.swfobject.embedSWF(
+            'StrobeMediaPlayback.swf',
+            'flash-replace',
+            '100%',
+            '100%',
+            '10.1.0',
+            'expressInstall.swf',
+            flashvars,
+            params
+        );
+
+        $('.container').on('click', 'a.thumbnail', function (e) {
+            var player;
+
+            if (isFlashReady) {
+                player = $('object').get(0);
+                player.setSrc($(e.currentTarget).data('media-url'));
+                player.load();
+                player.play2();
+            } else {
+                e.preventDefault();
+            }
+        });
+    }
 }());
         </script>
         <script type="text/javascript" src="../json/json-proxy.php?callback=processData"></script>

@@ -1,7 +1,7 @@
 <?php
 /*****************************************************************************
- * Copyright (c) 2011 IOWA, llc dba Wiredrive
- * Author J.O.D. (Joint Operations/Development)
+ * Copyright (c) 2013 IOWA, llc dba Wiredrive
+ * Author Wiredrive
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

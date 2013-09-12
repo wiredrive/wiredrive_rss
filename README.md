@@ -5,7 +5,7 @@ These example files are meant to be a starting place for developers to build web
 
 The XML and JSON examples show how to proxy a Wiredrive RSS feed and serve the data as raw XML or as JSON/JSONP to get around cross domain problems. Note that these examples only proxy the feed itself, **not** the media files contained within it.
 
-If you want to use the RSS data to power an Adobe Flash video player, the Flash example demonstrates one way to do this using the JSONP proxy example and Adobe Strobe.
+If you want to use the RSS data to power an Adobe Flash video player, the Flash example demonstrates one way to do this using the JSONP proxy example and [Adobe Strobe](http://osmf.org/strobe_mediaplayback.html).
 
 See the Yahoo! Developer page on [Cross-Domain requests](http://developer.yahoo.com/javascript/howto-proxy.html) for why proxying the feed through your web server is necessary.
 
@@ -19,7 +19,7 @@ See the Yahoo! Developer page on [Cross-Domain requests](http://developer.yahoo.
 
 * `/example/xml`: This file contains a example to output the unaltered RSS feed proxied and cached through the local server to get around crossdomain problems. 
 * `/example/json`: This file takes the XML proxy example and changes it to support JSON/JSONP output.
-* `/example/flash`: This example shows a complete demo of a web page making a JSONP request to the JSONP Proxy, building a thumbnail gallery, and playing the videos through Adobe Strobe.
+* `/example/flash`: This example shows a complete demo of a web page making a JSONP request to the JSONP Proxy, building a thumbnail gallery, and playing the videos through [Adobe Strobe](http://osmf.org/strobe_mediaplayback.html).
 
 ## Additional Resources:
 

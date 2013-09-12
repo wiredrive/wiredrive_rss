@@ -1,3 +1,4 @@
+<!doctype html>
 <!--
 /*****************************************************************************
  * Copyright (c) 2011 IOWA, llc dba Wiredrive
@@ -122,9 +123,18 @@ object {
     margin-top: 126px;
     margin-left: 270px;
 }
+
+#flash-replace {
+    text-align: center;
+}
+
+.flash-image {
+    margin-top: 20px;
+}
         </style>
 
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
     </head>
     <body>
         <div class="container">
@@ -135,7 +145,12 @@ object {
         
             <div id="player">
                 <div id="flash-replace">
-                    You do not appear to have flash installed.
+                    <div>
+                        You do not appear to have flash installed. Click the icon below to install:
+                    </div>
+                    <a href="http://get.adobe.com/flashplayer/">
+                        <span class="flash-image"></span>
+                    </a>
                 </div>
                 <div id="poster">
 
@@ -148,7 +163,6 @@ object {
             </div>
         </div>
 
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
         <script type="text/javascript">
 (function () {
     "use strict";

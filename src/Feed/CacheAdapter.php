@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
+namespace Feed;
+
 /**
  * Simple caching mechanism to store data into arbitrary files on disk.  The
  * cache directory can be specified else all files are stored relative to the
@@ -24,7 +26,7 @@
  * url and the file's modified date is used to determine if the file needs to
  * be updated.
  */
-class Feed_Cache_Adapter 
+class CacheAdapter 
 {
     /**
      * Cache Dir
@@ -45,7 +47,7 @@ class Feed_Cache_Adapter
 
     /**
      * @param   string      $cacheDir
-     * @return  Feed_Cache_Adapter
+     * @return  CacheAdapter
      */
     public function setCacheDir($cacheDir)
     {

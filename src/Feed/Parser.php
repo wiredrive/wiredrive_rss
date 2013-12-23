@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
+namespace Feed;
+
 /**
  * Simple feed parsing class.  Does some validation and data conversion for
  * convinience but it is not a full parsing library.
  */
-class Feed_Parser 
+class Parser 
 {
     /**
      * Contents
@@ -47,7 +49,7 @@ class Feed_Parser
     /**
      * Xml
      * The xml object that represents the current contents
-     * @var SimpleXMLElement
+     * @var \SimpleXMLElement
      */
     protected $xml = null;
 
@@ -73,13 +75,13 @@ class Feed_Parser
 
     /**
      * @param   string      $format
-     * @return  Feed_Parser
+     * @return  Parser
      */
     public function setFormat($format)
     {
         $validFormats = $this->getValidFormats();
         if (! in_array($format, $validFormats)) {
-            throw new Exception('Invalid parsing format');
+            throw new \Exception('Invalid parsing format');
         }
         $this->format = $format;
         return $this;
@@ -103,7 +105,7 @@ class Feed_Parser
 
     /**
      * @param   bool    $itemsOnly
-     * @return  Feed_Parser
+     * @return  Parser
      */
     public function setItemsOnly($itemsOnly)
     {
@@ -123,7 +125,7 @@ class Feed_Parser
      * When setting content, the current parsed xml feed is destroyed
      *
      * @param   string      $contents
-     * @return  Feed_Parser
+     * @return  Parser
      */
     public function setContents($contents)
     {
@@ -133,7 +135,7 @@ class Feed_Parser
     }
 
     /**
-     * @return  SimpleXMLElement
+     * @return  \SimpleXMLElement
      */
     protected function getXml()
     {
@@ -159,13 +161,13 @@ class Feed_Parser
     {
         $contents = $this->getContents();
         if (empty($contents)) {
-            throw new Exception('Invalid contents for feed processing');
+            throw new \Exception('Invalid contents for feed processing');
         }
 
         try {
-            $xml = new SimpleXMLElement($contents);
-        } catch (Exception $exception) {
-            throw new Exception('Failed parsing contents', 1, $exception);
+            $xml = new \SimpleXMLElement($contents);
+        } catch (\Exception $exception) {
+            throw new \Exception('Failed parsing contents', 1, $exception);
         }
 
         $this->xml = $xml;
@@ -184,12 +186,12 @@ class Feed_Parser
     {
         $validFormats = $this->getValidFormats();
         if (! in_array($format, $validFormats)) {
-            throw new Exception('Invalid format requested');
+            throw new \Exception('Invalid format requested');
         }
         
         $xml = $this->getXml();
-        if (! $xml instanceof SimpleXMLElement) {
-            throw new Exception('Cannot process an non-existant feed');
+        if (! $xml instanceof \SimpleXMLElement) {
+            throw new \Exception('Cannot process an non-existant feed');
         }
         switch ($format) {
             case 'xml';
@@ -212,7 +214,7 @@ class Feed_Parser
     {
         $feedData = $this->processArray($itemsOnly);
         if (! is_array($feedData)) {
-            throw new Exception('Unexpected data returned');
+            throw new \Exception('Unexpected data returned');
         }
         return json_encode($feedData);
     }
@@ -319,7 +321,11 @@ class Feed_Parser
                     if (! isset($itemData[$nsItemName])) {
                         $itemData[$nsItemName] = array();
                     }
-                    $itemData[$nsItemName][] = $nsItemData;
+                    if (! is_array($itemData[$nsItemName])) {
+                        $itemData[$nsItemName] = $nsItemData;                   
+                    } else {
+                        $itemData[$nsItemName][] = $nsItemData;
+                    } 
                 }
             }
             $feedData[] = $itemData;
@@ -337,7 +343,7 @@ class Feed_Parser
     {
         $xml = $this->getXml();
         if (null == $xml) {
-            throw new Exception('No feed loaded');
+            throw new \Exception('No feed loaded');
         }
         $channel = $xml->channel;
         return (string) $channel->$propertyName;

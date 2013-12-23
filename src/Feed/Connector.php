@@ -17,12 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
+namespace Feed;
+
 /**
  * Simple class to wrap curl requests for pulling data from a url.  If
  * a user wants to read off disk, extend this file and overrite the 
  * 'fetchData' call.  An interface would work better but seems unnecessary.
  */
-class Feed_Connector 
+class Connector 
 {
 
     /**
@@ -43,7 +45,7 @@ class Feed_Connector
     /**
      * Initializes the curl connection
      *
-     * @return  Feed_Connector
+     * @return  Connector
      */
     protected function initialize()
     {
@@ -54,7 +56,7 @@ class Feed_Connector
     /**
      * Closes the curl connection if it is set
      *
-     * @return  Feed_Connector
+     * @return  Connector
      */
     protected function shutDown()
     {
@@ -75,7 +77,7 @@ class Feed_Connector
     public function fetchData($url)
     {
         if (empty($url)) {
-            throw new Exception('Url cannot be empty');
+            throw new \Exception('Url cannot be empty');
         }
         $response = $this->initialize()
                          ->sendRequest($url);

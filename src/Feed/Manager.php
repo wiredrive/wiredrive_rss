@@ -17,13 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
+namespace Feed;
+
 /**
  * The feed manager is the primary class to handle the feed processing.  It
  * can be used to fetch an rss feed and make it accessible by php, return it
  * unaltered, or json encode the data to be used by javascript or echoed
  * out.
  */
-class Feed_Manager 
+class Manager 
 {
     /**
      * Feed Url
@@ -46,7 +48,7 @@ class Feed_Manager
      * set to a different mechanism prior to data fetching so long as the
      * interface is followed.
      *
-     * @var Feed_Cache_Adapter
+     * @var CacheAdapter
      */
     protected $cacheAdapter = null;
 
@@ -54,7 +56,7 @@ class Feed_Manager
      * Connector
      * The feed retrieval mechanism to pull down the feed.
      *
-     * @var Feed_Connector
+     * @var Connector
      */
     protected $connector = null;
 
@@ -62,7 +64,7 @@ class Feed_Manager
      * Parser
      * The feed parser
      *
-     * @var Feed_Parser
+     * @var Parser
      */
     protected $parser = null;
 
@@ -75,9 +77,9 @@ class Feed_Manager
      */
     public function __construct(array $config = array())
     {
-        $this->setConnector(new Feed_Connector())
-             ->setParser(new Feed_Parser())
-             ->setCacheAdapter(new Feed_Cache_Adapter());
+        $this->setConnector(new Connector())
+             ->setParser(new Parser())
+             ->setCacheAdapter(new CacheAdapter());
 
         if (array_key_exists('feedUrl', $config)) {
             $this->setFeedUrl($config['feedUrl']);
@@ -98,12 +100,12 @@ class Feed_Manager
 
     /**
      * @param   string      $url
-     * @return  Feed_Manager
+     * @return  Manager
      */
     public function setFeedUrl($url)
     {
         if (empty($url)) {
-            throw new Exception('Feed urls cannot be empty');
+            throw new \Exception('Feed urls cannot be empty');
         }
         $this->feedUrl = $url;
         return $this;
@@ -118,17 +120,17 @@ class Feed_Manager
     }
     
     /**
-     * @param   Feed_Cache_Adapter  $adapter
-     * @return  Feed_Manager
+     * @param   CacheAdapter  $adapter
+     * @return  Manager
      */
-    public function setCacheAdapter(Feed_Cache_Adapter $adapter)
+    public function setCacheAdapter(CacheAdapter $adapter)
     {
         $this->cacheAdapter = $adapter;
         return $this;
     }
     
     /**
-     * @return  Feed_Cache_Adapter
+     * @return  CacheAdapter
      */
     public function getCacheAdapter()
     {
@@ -137,7 +139,7 @@ class Feed_Manager
 
     /**
      * @param   bool    $isCache
-     * @return  Feed_Manager
+     * @return  Manager
      */
     public function setIsCache($isCache)
     {
@@ -155,7 +157,7 @@ class Feed_Manager
 
     /**
      * @param   string      $cacheDir
-     * @return  Feed_Manager
+     * @return  Manager
      */
     public function setCacheDir($cacheDir)
     {
@@ -175,7 +177,7 @@ class Feed_Manager
 
     /**
      * @param   string  $format
-     * @return  Feed_Manager
+     * @return  Manager
      */
     public function setFormat($format)
     {
@@ -194,7 +196,7 @@ class Feed_Manager
     }
 
     /**
-     * @return  Feed_Parser
+     * @return  Parser
      */
     public function getParser()
     {
@@ -202,17 +204,17 @@ class Feed_Manager
     }
 
     /**
-     * @param   Feed_Parser     $parser
-     * @return  Feed_Manager
+     * @param   Parser     $parser
+     * @return  Manager
      */
-    public function setParser(Feed_Parser $parser)
+    public function setParser(Parser $parser)
     {
         $this->parser = $parser;
         return $this;
     }
 
     /**
-     * @return  Feed_Connector
+     * @return  Connector
      */
     public function getConnector()
     {
@@ -220,10 +222,10 @@ class Feed_Manager
     }
 
     /**
-     * @param   Feed_Connector      $connector
-     * @return  Feed_Manager
+     * @param   Connector      $connector
+     * @return  Manager
      */
-    public function setConnector(Feed_Connector $connector)
+    public function setConnector(Connector $connector)
     {
         $this->connector = $connector;
         return $this;
@@ -307,8 +309,8 @@ class Feed_Manager
         $url    = $this->getFeedUrl();
         $feedContents = $this->getContents($url);
         
-        return $parser->setContents($feedData)
-                      ->process();
+        return $this->parser->setContents($feedContents)
+                            ->process();
     }
 
     /**
@@ -324,12 +326,12 @@ class Feed_Manager
         $connector  = $this->getConnector();
         
         if (empty($url)) {
-            throw new Exception('Invalid feed url supplied');
+            throw new \Exception('Invalid feed url supplied');
         }
 
         $contents  = $connector->fetchData($url);
         if (false == $contents) {
-            throw new Exception('Failed retrieved data');
+            throw new \Exception('Failed retrieved data');
         }
         return $contents;
     }

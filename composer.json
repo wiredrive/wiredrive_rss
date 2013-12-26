@@ -18,8 +18,8 @@
         "php": ">=5.3"
     },
     "autoload": {
-        "psr-0" : {
-            "Feed" : "src/"
+        "psr-0": {
+            "Feed": "src/"
         }
     }
 }

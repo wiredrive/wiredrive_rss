@@ -3,7 +3,7 @@
     "type": "library",
     "description": "A simple rss feed cache and parser utility",
     "homepage": "https://github.com/wiredrive/wiredrive_rss",
-    "version": "0.2.2",
+    "version": "3.0",
     "license": "BSD",
     "authors": [
         {

@@ -21,7 +21,7 @@
  * Dependency file for the Feed module.  This is useful if you don't have an
  * autoloader configured.  If you do, please omit this file
  */
-require_once('src/Feed/Cache_Adapter.php');
+require_once('src/Feed/CacheAdapter.php');
 require_once('src/Feed/Connector.php');
 require_once('src/Feed/Parser.php');
 require_once('src/Feed/Manager.php');

@@ -71,7 +71,7 @@ $config = array(
 );
 
 /* get the feed */
-$feedManager = new Feed_Manager($config);
+$feedManager = new \Feed\Manager($config);
 $output = $feedManager->process();
 
 /* determine the expires time for this feed */   
